@@ -1,0 +1,28 @@
+language: 'english'
+banker-skin-name: 'cocoraid'
+hostess-skin-name: 'sovve'
+police-skin-name:
+  - '57digital'
+  - 'IchWeisNix'
+  - 'Officer_RJ'
+  - 'RyanMoodGAMES_YT'
+swat-skin-name:
+  - 'Alpha_Pro_'
+  - 'QuiGon_JinnUwU'
+  - 'MulletManAUS'
+  - 'august19'
+  - 'blsst'
+  - 'UnBatoComun'
+  - 'PapuXII'
+min-chest-money: 100
+max-chest-moneyt: 1000
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+money-material: GOLD_INGOT
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+money-collected-sound: ITEM_ARMOR_EQUIP_CHAIN
+# Time in seconds
+time-limit-before-swatting: 120
+time-limit-before-jail: 60
+number-of-swat-per-point: 1
+percentage-money-confiscated-jail: 50
+percentage-money-confiscated-die: 30
