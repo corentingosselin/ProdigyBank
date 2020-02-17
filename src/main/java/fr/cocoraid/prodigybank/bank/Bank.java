@@ -112,8 +112,9 @@ public class Bank {
         npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
 
         sentinel.attackRate = 4;
-        sentinel.range = 300;
-        sentinel.chaseRange = 300;
+        sentinel.range = 100;
+        sentinel.chaseRange = 100;
+        npc.getNavigator().getDefaultParameters().range((float) 100);
         npc.data().setPersistent(NPC.PATHFINDER_OPEN_DOORS_METADATA,true);
         npc.data().setPersistent("nameplate-visible", false);
         npc.spawn(location);
@@ -506,9 +507,10 @@ public class Bank {
                 shield.setItemMeta(bmeta);
                 npc.getTrait(Equipment.class)
                         .set(Equipment.EquipmentSlot.OFF_HAND, shield);
+
+                npc.getNavigator().getDefaultParameters().range((float) 100);
                 SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
                 sentinel.fightback = true;
-                sentinel.realistic = false;
                 sentinel.chaseRange = 100;
                 sentinel.range = 100;
                 sentinel.health = 30;
