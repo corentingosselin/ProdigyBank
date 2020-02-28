@@ -324,6 +324,10 @@ public class SetupBankProcess {
         return waitingForChest;
     }
 
+    public boolean isSafeDeposit(Block b) {
+        return chests.stream().filter(s -> s.getChest() == b).findAny().isPresent();
+    }
+
     public World getWorld() {
         return world;
     }

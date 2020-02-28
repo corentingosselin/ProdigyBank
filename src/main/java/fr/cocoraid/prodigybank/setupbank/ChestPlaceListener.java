@@ -30,8 +30,10 @@ public class ChestPlaceListener implements Listener {
     public void chestRemove(BlockBreakEvent e) {
         if(e.getBlock() != null && (e.getBlock().getType() == Material.ENDER_CHEST)) {
             if (e.getPlayer().equals(process.getAdmin()) && process.isWaitingForChest()) {
-                process.removeChest(e.getBlock());
-                e.getPlayer().sendMessage(lang.chest_removed);
+                if(process.isSafeDeposit(e.getBlock())) {
+                    process.removeChest(e.getBlock());
+                    e.getPlayer().sendMessage(lang.chest_removed);
+                }
             }
         }
     }
