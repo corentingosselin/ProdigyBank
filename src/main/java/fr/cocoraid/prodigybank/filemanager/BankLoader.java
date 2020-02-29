@@ -152,8 +152,8 @@ public class BankLoader {
                 chests
         );
 
-        bank.setPolice(police);
-        bank.setSwat_points(swats);
+        bank.getPoliceStaff().setPolice(police);
+        bank.getSwatTeam().setSwat_points(swats);
         bank.setChests(chests);
         bank.setDoors_to_lock(doors);
 
@@ -183,9 +183,9 @@ public class BankLoader {
         data.set(VAULT_DOOR_POINT1,b.getVaultDoor().getCuboid().getPoint1());
         data.set(VAULT_DOOR_POINT2,b.getVaultDoor().getCuboid().getPoint2());
 
-        data.set(BANKER,b.getBanker().getId());
-        data.set(DEPOSIT,b.getDepositHostess().getId());
-        data.set(WITHDRAW,b.getWithdrawHostess().getId());
+        data.set(BANKER,b.getBankerStaff().getBanker().getId());
+        data.set(DEPOSIT,b.getHostessStaff().getDepositHostess().getId());
+        data.set(WITHDRAW,b.getHostessStaff().getWithdrawHostess().getId());
 
         data.set(JAIL,b.getJail());
 
@@ -201,9 +201,9 @@ public class BankLoader {
         if(instance.getBank() == null) return;
         Bank b = instance.getBank();
 
-        setBankerPos(b.getBanker().getStoredLocation());
-        setDepositHostessPos(b.getDepositHostess().getStoredLocation());
-        setWithdrawHostessPos(b.getWithdrawHostess().getStoredLocation());
+        setBankerPos(b.getBankerStaff().getBanker().getStoredLocation());
+        setDepositHostessPos(b.getHostessStaff().getDepositHostess().getStoredLocation());
+        setWithdrawHostessPos(b.getHostessStaff().getWithdrawHostess().getStoredLocation());
     }
 
     public Location getDepositHostessSpawnPoint() {
@@ -262,7 +262,7 @@ public class BankLoader {
 
     public void savePolice(boolean write) {
         Bank b = instance.getBank();
-        b.getPolice().stream().filter(npc -> npc.isSpawned()).forEach(npc -> {
+        b.getPoliceStaff().getPolice().stream().filter(npc -> npc.isSpawned()).forEach(npc -> {
             data.set(POLICE + "." + npc.getId(),npc.getStoredLocation());
         });
         if(write) saveData();
@@ -271,7 +271,7 @@ public class BankLoader {
 
     public void saveSwat(boolean write) {
         Bank b = instance.getBank();
-        data.set(SWAT_POINTS,b.getSwat_points());
+        data.set(SWAT_POINTS,b.getSwatTeam().getSwat_points());
         if(write) saveData();
 
     }

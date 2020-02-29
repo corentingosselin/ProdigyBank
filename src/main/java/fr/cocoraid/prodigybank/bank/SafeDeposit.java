@@ -41,7 +41,7 @@ public class SafeDeposit {
         meta.setLocalizedName(uuid);
         key.setItemMeta(meta);
         chest.setMetadata("key",new FixedMetadataValue(ProdigyBank.getInstance(),uuid));
-        return key;
+        return this.key;
     }
 
     public void openChest(Bank bank) {
@@ -65,7 +65,7 @@ public class SafeDeposit {
                 item.setItemMeta(meta);
                 Item drop = chest.getWorld().dropItem(chest.getLocation().getBlock().getLocation().add(0.5,0.4,0.5),item);
                 drop.setVelocity(new Vector(Utils.getRandom(-0.5D,0.5D), Utils.getRandom(0.1D,0.7D), Utils.getRandom(-0.5D,0.5D)));
-                bank.getAllMoney().add(drop);
+                bank.getHoldUp().getAllDroppedMoney().add(drop);
 
                 chest.getWorld().playSound(chest.getLocation(),Sound.ITEM_ARMOR_EQUIP_GOLD,0.5F,2F);
 

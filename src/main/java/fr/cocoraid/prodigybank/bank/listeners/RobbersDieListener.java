@@ -2,6 +2,7 @@ package fr.cocoraid.prodigybank.bank.listeners;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
+import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import org.bukkit.event.EventHandler;
@@ -23,21 +24,22 @@ public class RobbersDieListener implements Listener {
 
     @EventHandler
     public void rooberDie(PlayerDeathEvent e) {
-        if(!bank.isHoldup()) return;
-        if(bank.getSquad().getSquad().contains(e.getEntity())) {
-            bank.getSquad().getSquad().remove(e.getEntity());
-            if(bank.getSquad().getOwner().equals(e.getEntity())) {
+        if(!bank.getHoldUp().isHoldup()) return;
+        Squad squad = bank.getHoldUp().getSquad();
+        if(squad.getSquadMembers().contains(e.getEntity())) {
+            squad.getSquadMembers().remove(e.getEntity());
+            if(squad.getOwner().equals(e.getEntity())) {
                 e.setDeathMessage("");
-                bank.getSquad().getSquad().forEach(s -> {
-                    bank.failSquadMember(s,config.getPercentDie());
+                squad.getSquadMembers().forEach(s -> {
+                    squad.failSquadMember(s,config.getPercentDie());
                 });
                 //30% of money
-                bank.getSquad().sendTeamSubTitle(new StringBuilder(lang.owner_died).toString()
+                squad.sendTeamSubTitle(new StringBuilder(lang.owner_died).toString()
                         .replace("%percentage", String.valueOf(config.getPercentDie())));
 
-                bank.getSquad().sendOwnerSubTitle(new StringBuilder(lang.go_to_jail).toString()
+                squad.sendOwnerSubTitle(new StringBuilder(lang.go_to_jail).toString()
                         .replace("%percentage", String.valueOf(config.getPercentDie())));
-                bank.endHoldUp();
+                bank.getHoldUp().endHoldUp();
 
             }
         }

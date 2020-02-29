@@ -154,12 +154,12 @@ public class ProdigyBankSetupCMD extends BaseCommand {
      */
     @Subcommand("add police") @Conditions("bank")
     public void onPoliceAdd(Player player) {
-        instance.getBank().addPoliceMember(player,player.getLocation());
+        instance.getBank().getPoliceStaff().addPoliceMember(player,player.getLocation());
     }
 
     @Subcommand("add swat") @Conditions("bank")
     public void onSwatAdd(Player player) {
-        instance.getBank().addSwatSpawnPoint(player,player.getLocation());
+        instance.getBank().getSwatTeam().addSwatSpawnPoint(player,player.getLocation());
     }
 
     @Subcommand("add door") @Conditions("bank")

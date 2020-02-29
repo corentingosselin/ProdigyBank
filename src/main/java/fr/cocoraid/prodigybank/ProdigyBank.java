@@ -5,8 +5,8 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.Driller;
-import fr.cocoraid.prodigybank.bank.listeners.*;
 import fr.cocoraid.prodigybank.bank.Squad;
+import fr.cocoraid.prodigybank.bank.listeners.*;
 import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import fr.cocoraid.prodigybank.commands.MainCMD;
 import fr.cocoraid.prodigybank.commands.ProdigyBankSetupCMD;
@@ -34,8 +34,8 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
 
     private Map<UUID, Squad> squads = new HashMap<>();
-    public void createSquad(Player owner) {
-        squads.put(owner.getUniqueId(),new Squad(owner));
+    public void createSquad(Bank bank,Player owner) {
+        squads.put(owner.getUniqueId(),new Squad(bank,owner));
     }
 
     public Map<UUID, Squad> getSquads() {
@@ -106,7 +106,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     public void onDisable() {
         super.onDisable();
         if(bank != null) {
-            bank.endHoldUp();
+            bank.getHoldUp().endHoldUp();
         }
         if(bankLoader != null) {
             bankLoader.save();

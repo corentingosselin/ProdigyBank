@@ -13,7 +13,6 @@ swat-skin-name:
   - 'august19'
   - 'blsst'
   - 'UnBatoComun'
-  - 'PapuXII'
 min-chest-money: 100
 max-chest-moneyt: 1000
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html

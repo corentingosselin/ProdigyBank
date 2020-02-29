@@ -21,7 +21,7 @@ public class MainCMD extends BaseCommand {
         if (args.length == 0) {
             player.sendMessage("ceci est une aide");
             Location l = player.getLocation();
-            ProdigyBank.getInstance().getBank().endHoldUp();
+            ProdigyBank.getInstance().getBank().getHoldUp().endHoldUp();
 
         }
     }

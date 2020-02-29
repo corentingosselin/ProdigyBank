@@ -2,6 +2,7 @@ package fr.cocoraid.prodigybank.bank.listeners;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
+import net.citizensnpcs.api.event.NPCDeathEvent;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,10 +26,13 @@ public class CancelBankListener implements Listener {
         }
     }
 
+
+
     @EventHandler
     public void death(PlayerDeathEvent e) {
-        if(bank.isHoldup())
-            if(bank.isPoliceOrSwat(e.getEntity())) e.setDeathMessage("");
+        if(bank.getHoldUp().isHoldup())
+
+            if(bank.getPoliceStaff().isPoliceMember(e.getEntity()) || bank.getSwatTeam().isSwatMember(e.getEntity()))e.setDeathMessage("");
     }
 
 }

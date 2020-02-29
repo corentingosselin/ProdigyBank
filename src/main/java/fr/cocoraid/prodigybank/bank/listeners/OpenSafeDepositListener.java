@@ -9,32 +9,50 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class OpenSafeDepositListener implements Listener {
 
+    private ProdigyBank instance;
     private Bank bank;
     public OpenSafeDepositListener(ProdigyBank instance) {
+        this.instance = instance;
         this.bank = instance.getBank();
     }
 
     @EventHandler
     public void pickupMoney(EntityPickupItemEvent e) {
         if(e.getEntity() instanceof Player) {
-            if(!bank.isHoldup()) return;
+            if(!bank.getHoldUp().isHoldup()) return;
             Player p = (Player) e.getEntity();
-            if(bank.getAllMoney().contains(e.getItem())) {
+            if(bank.getHoldUp().getAllDroppedMoney().contains(e.getItem())) {
                 e.setCancelled(true);
                 e.getItem().remove();
-                bank.getSquad().addMoney(Integer.valueOf(e.getItem().getItemStack().getItemMeta().getLocalizedName()));
+                bank.getHoldUp().getSquad().addMoney(Integer.valueOf(e.getItem().getItemStack().getItemMeta().getLocalizedName()));
             }
         }
     }
 
+
+    @EventHandler
+    public void cancelKeyPlace(BlockPlaceEvent e) {
+        Bank b = instance.getBank();
+        if(!b.getHoldUp().isHoldup()) return;
+        b.getHoldUp().getKeys().forEach(itemStack -> {
+            System.out.println("key " + itemStack);
+        });
+        System.out.println("final  " + e.getItemInHand());
+        if(b.getHoldUp().getKeys().contains(e.getItemInHand())) {
+            e.setCancelled(true);
+        }
+
+    }
+
     @EventHandler
     public void chestOpen(PlayerInteractEvent e) {
-        if(!bank.isHoldup()) return;
+        if(!bank.getHoldUp().isHoldup()) return;
         if(e.getClickedBlock() != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
             if(!bank.getChests().stream().filter(c -> c.getChest().equals(e.getClickedBlock())).findAny().isPresent()) return;

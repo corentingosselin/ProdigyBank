@@ -17,9 +17,11 @@ public class DetectStaffRemoveListener implements Listener {
 
     @EventHandler
     public void detectRemove(NPCRemoveEvent e) {
-        if(bank.getPolice().contains(e.getNPC())) {
-            bank.removePoliceMember(e.getNPC());
-        } else if(bank.isBankMember(e.getNPC())) {
+
+        if(bank.getPoliceStaff().getPolice().contains(e.getNPC())) {
+            bank.getPoliceStaff().removePoliceMember(e.getNPC());
+        } else if(bank.isNonViolentStaffMember(e.getNPC())) {
+
         }
     }
 

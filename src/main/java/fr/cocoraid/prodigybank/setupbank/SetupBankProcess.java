@@ -229,9 +229,12 @@ public class SetupBankProcess {
         } else if(currentStep == BankProcessStep.DEPOSIT_HOSTESS) {
             depositHostess = npc;
             currentStep = BankProcessStep.WITHDRAW_HOSTESS;
+            sentinel.squad = "hostess";
             admin.sendMessage(lang.next_withdraw_setup);
+
         } else if(currentStep == BankProcessStep.WITHDRAW_HOSTESS) {
             withdrawHostess = npc;
+            sentinel.squad = "hostess";
             admin.sendMessage(lang.next_addchest_setup);
             currentStep = BankProcessStep.CHEST_POINTS;
         }

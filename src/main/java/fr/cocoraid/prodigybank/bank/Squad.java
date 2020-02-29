@@ -1,9 +1,11 @@
 package fr.cocoraid.prodigybank.bank;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -14,8 +16,10 @@ public class Squad {
     private int moneyCollected = 0;
     private Player owner;
     private List<Player> squad = new ArrayList<>();
+    private Bank bank;
 
-    public Squad(Player owner) {
+    public Squad(Bank bank, Player owner) {
+        this.bank = bank;
         this.owner = owner;
         squad.add(owner);
     }
@@ -24,8 +28,24 @@ public class Squad {
         return owner;
     }
 
-    public List<Player> getSquad() {
+    public List<Player> getSquadMembers() {
         return squad;
+    }
+
+
+    public void reward() {
+        //not the right algo
+        //need to divide between each member, the owner has a bigger percentage (configurable)
+       /* getSquadMembers().forEach(s -> {
+            EconomyBridge.giveMoney(s,moneycollected);
+        });*/
+    }
+
+
+    public void failSquadMember(Player player, int percentage) {
+        player.teleport(bank.getJail());
+        int money = (int) EconomyBridge.getMoney(player) ;
+        EconomyBridge.takeMoney(player, money * percentage / 100);
     }
 
 
@@ -72,6 +92,7 @@ public class Squad {
         } );
 
     }
+
 
 
     public int getMoneyCollected() {
