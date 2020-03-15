@@ -13,6 +13,11 @@ public class NMSPlayer {
 
 
     private static Reflection.FieldAccessor<?> playerConnectionField = Reflection.getField("{nms}.EntityPlayer", "playerConnection", Object.class);
+    private static Reflection.FieldAccessor<?> lastX = Reflection.getField("{nms}.EntityPlayer", "lastX", double.class);
+    private static Reflection.FieldAccessor<?> lastY = Reflection.getField("{nms}.EntityPlayer", "lastY", double.class);
+    private static Reflection.FieldAccessor<?> lastZ = Reflection.getField("{nms}.EntityPlayer", "lastZ", double.class);
+    private static Reflection.FieldAccessor<?> lastYaw = Reflection.getField("{nms}.EntityPlayer", "lastYaw", float.class);
+    private static Reflection.FieldAccessor<?> lastPitch = Reflection.getField("{nms}.EntityPlayer", "lastPitch", float.class);
 
     private static Reflection.MethodInvoker getHandlePlayerMethod = Reflection.getMethod("{obc}.entity.CraftPlayer", "getHandle");
     private static Reflection.MethodInvoker getHandleMethod = Reflection.getMethod("{obc}.entity.CraftEntity", "getHandle");
@@ -46,6 +51,17 @@ public class NMSPlayer {
         UtilLocation.getClosestPlayersFromLocation(from, 64).forEach(viewers -> {
             sendPacket(viewers,packets);
         });
+    }
+
+    public static Location getLastLocation(Player player) {
+        Object craftPlayer = getHandle(player);
+        double x = Double.valueOf(lastX.get(craftPlayer).toString()).doubleValue();
+        double y = Double.valueOf(lastY.get(craftPlayer).toString()).doubleValue();
+        double z = Double.valueOf(lastZ.get(craftPlayer).toString()).doubleValue();
+        float yaw = Double.valueOf(lastYaw.get(craftPlayer).toString()).floatValue();
+        float pitch = Float.valueOf(lastPitch.get(craftPlayer).toString()).floatValue();
+        return new Location(player.getWorld(),x, y,z,yaw,pitch);
+
     }
 
 

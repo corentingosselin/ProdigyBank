@@ -59,25 +59,26 @@ public class Language {
     public String withdraw_hostess_name = "§bWithdraw";
     public String banker_name = "§4Banker";
 
-    public String holdup_starting = "§4&lHeey ! Hold up : Tell me where is the banker right now !";
-    public String time_left_notify_swat = "§3You now have %time minutes : before swat team coming";
-    public String time_left_notify_escape = "§3You now have %time minutes to escape : §cIf you do not want to be jailed !";
-    public String swatting = "§cYou are still inside the bank ! : §3The swat team is coming now...";
-    public String doors_closed = "§4All exits are now locked up ! : §cYou must use a bomb to escape...";
+    public String holdup_starting = "§4Hold up : §7Tell me where is the banker right now !";
+    public String time_left_notify_swat = "§3You now have  : §b%time minutes before swat team coming";
+    public String time_left_notify_escape = "§cEscape ! : §7%time minutes to escape before jail !";
+    public String swatting = " : §3The swat team is coming now...";
+    public String doors_closed = "§4Locked up ! : §cYou must use a bomb to escape...";
 
     public String time_left_type = "§cTIME LEFT: §4%time §cBEFORE %type ";
     public String time_swat_type = "§7SWAT";
     public String time_jail_type = "§4JAIL";
 
-    public String out_warning = "§cYou are about to leave the bank : §7While the bank has not been robbed";
-    public String bank_left_not_robbed = "§cYou left the bank : §7While the bank has not been robbed";
-    public String bank_leader_left_not_robbed = "§cYour leader left the bank : §7While the bank has not been robbed";
+    public String out_warning = "§cWarning : §7The bank has not been robbed";
+    public String bank_left_not_robbed = "§cBank left : §7While the bank has not been robbed";
+    public String bank_leader_left_not_robbed = "§cLeader surrender : §7While the bank has not been robbed";
     public String bank_left_robbed = "§3Congratulation : §bYou have successfully robbed the bank !";
-    public String go_to_jail = "§4You failed ! : §cYou were jailed, you just lose %percentage of your money";
+    public String go_to_jail = "§4You failed ! : §cYou just lose %percentage of your money";
 
-    public String owner_died = "§4Your leader died ! : §cYou were jailed, you just lose %percentage of your money";
+    public String owner_died = "§4Leader Dead! : §cYou just lose %percentage of your money";
 
     public String area_restricted = "§4Area restricted ! : §cRobbery in progress, SWAT is coming...";
+    public String hostage_notify = "§4Hold UP ! : §cYou are now hostage (pvp enabled)";
 
 
     public String chest_key_name = "§6Safe Deposit Key";

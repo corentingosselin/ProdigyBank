@@ -99,6 +99,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         this.bankLoader = new BankLoader(this);
         bankLoader.load();
         registerBankEvents();
+
     }
 
 
@@ -116,7 +117,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     public void registerBankEvents() {
         if(bank != null) {
             Bukkit.getPluginManager().registerEvents(new DetectHoldUpListener(this),this);
-            Bukkit.getPluginManager().registerEvents(new CancelBankListener(this),this);
+            Bukkit.getPluginManager().registerEvents(new CheckBankListener(this),this);
             Bukkit.getPluginManager().registerEvents(new DetectStaffRemoveListener(this),this);
             Bukkit.getPluginManager().registerEvents(new OpenSafeDepositListener(this),this);
             Bukkit.getPluginManager().registerEvents(new RobbersDieListener(this),this);

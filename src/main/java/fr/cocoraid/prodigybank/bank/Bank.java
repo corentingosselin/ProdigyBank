@@ -36,6 +36,7 @@ import java.util.*;
 
 public class Bank {
 
+
     private static Map<Bank, HoldUp> holdups = new HashMap<>();
 
 
@@ -184,7 +185,6 @@ public class Bank {
     public SwatTeam getSwatTeam() {
         return swatTeam;
     }
-
 
     public static Map<Bank, HoldUp> getHoldups() {
         return holdups;

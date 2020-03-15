@@ -33,12 +33,15 @@ public class Squad {
     }
 
 
-    public void reward() {
+
+
+    private void reward() {
         //not the right algo
         //need to divide between each member, the owner has a bigger percentage (configurable)
        /* getSquadMembers().forEach(s -> {
             EconomyBridge.giveMoney(s,moneycollected);
         });*/
+
     }
 
 

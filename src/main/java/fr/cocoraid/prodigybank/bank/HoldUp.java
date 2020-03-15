@@ -2,10 +2,13 @@ package fr.cocoraid.prodigybank.bank;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.staff.authority.SwatTeam;
+import fr.cocoraid.prodigybank.customevents.EnterBankEvent;
+import fr.cocoraid.prodigybank.customevents.QuitBankEvent;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.nms.NMS;
+import fr.cocoraid.prodigybank.nms.NMSPlayer;
 import fr.cocoraid.prodigybank.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -18,6 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class HoldUp {
 
@@ -27,7 +31,7 @@ public class HoldUp {
     protected BankLoader bankLoader = instance.getBankLoader();
 
     private enum RobberyStep {
-        SWAT, DOORS_LOCKED, JAIL;
+        POLICE, SWAT, DOORS_LOCKED, JAIL;
     }
 
     private RobberyStep robberyStep;
@@ -40,7 +44,8 @@ public class HoldUp {
     private BukkitTask holdUpTask;
 
     private SwatTeam swatTeam;
-
+    private List<Player> playersInside = new ArrayList<>();
+    private List<Player> hostages = new ArrayList<>();
     private List<Item> allDroppedMoney = new ArrayList<>();
 
     public HoldUp(Bank bank) {
@@ -49,6 +54,10 @@ public class HoldUp {
 
 
     public void startHoldup(Squad squad) {
+
+        //send start messages
+        squad.sendSubTitle(lang.holdup_starting);
+
         //add target for every police: player and its squad
         this.squad = squad;
 
@@ -61,8 +70,7 @@ public class HoldUp {
             this.robberyStep = RobberyStep.JAIL;
         }
 
-        //send start messages
-        squad.sendSubTitle(lang.holdup_starting);
+
         //small delay
         new BukkitRunnable() {
             @Override
@@ -88,71 +96,89 @@ public class HoldUp {
         });
 
 
-
+        //bank notify
         Bukkit.getOnlinePlayers().stream().filter(cur -> ((Player) cur).getWorld().equals(bank.getWorld())).forEach(cur -> {
+
+            //add hostages
+            if(bank.getBankCuboid().isIn(cur) && !squad.getSquadMembers().contains(cur)) {
+                //send msg
+                Utils.sendTitle(cur,lang.hostage_notify);
+                getHostages().add(cur);
+            }
             cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_CONDUIT_ACTIVATE,2,0);
         });
 
+      startTask();
+
+        this.isHoldup = true;
+
+
+    }
+
+    private String timeMessage;
+    private List<UUID> warned = new ArrayList<>();
+    private void startTask() {
         this.holdUpTask = new BukkitRunnable() {
             boolean warning = false;
 
             @Override
             public void run() {
+
+
+                int minutes = time / (60 * 20);
+                int seconds = (time / 20) % 60;
+                int tick = (time % 20) * 3;
+                timeMessage = String.format("%02d:%02d:%02d", minutes, seconds,tick);
                 if(time % 20 == 0) {
-                    // prevent unknow people to enter inside the bank
-                    Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld())
-                            && !squad.getSquadMembers().contains(cur)).filter(cur -> !bank.getBankCuboid().isIn(cur.getLocation())).forEach(cur -> {
-                        if (bank.getBankCuboid().isInWithMarge(cur.getLocation(), 10)) {
-                            Utils.bumpEntity(cur,cur.getLocation(),3,0.1D);
-                            String msg = lang.area_restricted;
-                            Utils.sendTitle(cur,msg);
-                        }
-                    });
 
 
-                    //check squad member leave area
-                    squad.getSquadMembers().removeIf(cur -> {
-                        if(cur.equals(squad.getOwner())) return false;
-                        if( !bank.getBankCuboid().isIn(cur)) {
-                            if (time % (20 * 2) == 0) {
+
+
+                    //register custom events
+                    Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld())).forEach(cur -> {
+
+                        //send warnings:
+                        if(!warned.contains(cur.getUniqueId())) {
+
+                            if (squad.getSquadMembers().contains(cur) && bank.getBankCuboid().isInWithMarge(cur.getLocation(), -5)) {
+                                warned.add(cur.getUniqueId());
                                 String msg = lang.out_warning;
                                 Utils.sendTitle(cur, msg);
-                                return false;
                             }
-                        } else if(!bank.getBankCuboid().isInWithMarge(cur.getLocation(), 10)) {
-                            squad.sendSubTitle(lang.bank_left_robbed);
-                            squad.failSquadMember(cur,config.getPercentDie());
-                            return true;
 
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    warned.remove(cur.getUniqueId());
+                                }
+                            }.runTaskLater(instance,20*5);
                         }
-                        return false;
+
+
+
+
+                        if(!getPlayersInside().contains(cur) && bank.getBankCuboid().isIn(cur)) {
+                            EnterBankEvent e = new EnterBankEvent(cur, bank);
+                            Bukkit.getPluginManager().callEvent(e);
+                            if(e.isCancelled()) {
+                                cur.teleport(NMSPlayer.getLastLocation(cur));
+                                return;
+                            }
+                            getPlayersInside().add(cur);
+                        } else if(!bank.getBankCuboid().isIn(cur) && getPlayersInside().contains(cur)) {
+                            getPlayersInside().remove(cur);
+                            Bukkit.getPluginManager().callEvent(new QuitBankEvent(cur, bank));
+                        }
+
                     });
+
+
+
+
+
 
                     //check owner leave area
                     if (!bank.getBankCuboid().isIn(squad.getOwner().getLocation())) {
-                        if (!bank.getBankCuboid().isInWithMarge(squad.getOwner().getLocation(), 10)) {
-                            if(bank.getVaultDoor().isDestroyed() && bank.getChests().stream().filter(c -> c.isChestOpened()).findAny().isPresent()) {
-                                //sucess
-                                squad.reward();
-                                squad.sendSubTitle(lang.bank_left_robbed);
-                                endHoldUp();
-                                this.cancel();
-                                return;
-                            } else {
-                                squad.getSquadMembers().forEach(s -> squad.failSquadMember(s, config.getPercentJailed()));
-                                squad.sendTeamSubTitle(lang.bank_leader_left_not_robbed);
-                                squad.sendOwnerSubTitle(lang.bank_left_not_robbed);
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        squad.sendSubTitle(new StringBuilder(lang.go_to_jail).toString().replace("%percentage",String.valueOf(config.getPercentJailed())));
-                                    }
-                                }.runTaskLater(instance, 20 * 3);
-                                endHoldUp();
-                                return;
-
-                            }
-                        }
                         //send warning
                         if (!warning) {
                             squad.sendSubTitle(lang.out_warning);
@@ -176,19 +202,21 @@ public class HoldUp {
                     });
 
 
-                int minutes = time / (60 * 20);
-                int seconds = (time / 20) % 60;
-                int tick = (time % 20) * 3;
-                String timeMessage = String.format("%02d:%02d:%02d", minutes, seconds,tick);
-                if(robberyStep == RobberyStep.SWAT) {
 
-                    if(time % 2 == 0)
+                if(robberyStep == RobberyStep.SWAT) {
+                    if(time % 2 == 0) {
                         Bukkit.getOnlinePlayers().stream().filter(cur -> ((Player) cur).getWorld().equals(bank.getWorld())).forEach(cur -> {
-                            cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_NOTE_BLOCK_BELL,2,0);
+                            if(playersInside.contains(cur))
+                                cur.playSound(cur.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 0);
+                            else
+                                cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_NOTE_BLOCK_BELL, 2, 0);
                         });
+                    }
 
                     squad.sendActionBarMessage(new StringBuilder(lang.time_left_type)
                             .toString().replace("%time",timeMessage).replace("%type",lang.time_swat_type));
+
+
                     if(time <= 0) {
                         time = config.getTimeBeforeJail();
                         squad.sendSubTitle(lang.swatting);
@@ -231,9 +259,19 @@ public class HoldUp {
                 time--;
             }
         }.runTaskTimer(instance,0,0);
+    }
 
-        this.isHoldup = true;
 
+    private void updateBeforeSwat() {
+
+    }
+
+
+    private void updateBeforeDoors() {
+
+    }
+
+    private void updateBeforeJail() {
 
     }
 
@@ -298,7 +336,15 @@ public class HoldUp {
         this.squad = squad;
     }
 
+    public List<Player> getHostages() {
+        return hostages;
+    }
+
     public void setHoldup(boolean holdup) {
         isHoldup = holdup;
+    }
+
+    public List<Player> getPlayersInside() {
+        return playersInside;
     }
 }

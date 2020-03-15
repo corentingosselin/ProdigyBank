@@ -57,7 +57,7 @@ public class Driller {
                 points.forEach(p -> {
                     for (Player cur : Bukkit.getOnlinePlayers()) {
                         if(!cur.getWorld().equals(location.getWorld())) return;
-                        cur.getWorld().spawnParticle(Particle.CRIT_MAGIC, p, 1, 0, 0, 0, 0);
+                        cur.getWorld().spawnParticle(Particle.REDSTONE, p, 1, 0.2, 0.2, 0.2, 0.2F);
                     }
                 });
 
@@ -70,7 +70,7 @@ public class Driller {
                         Location p = points.get(index);
                         for (Player cur : Bukkit.getOnlinePlayers()) {
                             if(!cur.getWorld().equals(location.getWorld())) return;
-                            cur.getWorld().spawnParticle(Particle.DRAGON_BREATH, p, 1, 0, 0, 0, 0);
+                            cur.getWorld().spawnParticle(Particle.CLOUD, p, 1, 0, 0, 0, 0);
                         }
                     }
 
@@ -79,7 +79,7 @@ public class Driller {
                         instance.getBank().getVaultDoor().getBlocks().forEach(b -> {
                             for (Player cur : Bukkit.getOnlinePlayers()) {
                                 if(!cur.getWorld().equals(location.getWorld())) return;
-                                cur.getWorld().spawnParticle(Particle.CRIT_MAGIC, b.getLocation(), 5, 0.5, 0.5, 0.5, 0.4F);
+                                cur.getWorld().spawnParticle(Particle.CRIT_MAGIC, b.getLocation(), 5, 1, 1, 1, 0.4F);
                             }
                         });
                         this.shooting = false;
@@ -97,8 +97,8 @@ public class Driller {
                 if(time % (20 * 3) == 0) {
                     this.shooting = true;
                     this.i = 0;
-                    location.getWorld().playSound(location, Sound.BLOCK_REDSTONE_TORCH_BURNOUT, 1f, 0F);
-                    location.getWorld().spawnParticle(Particle.DRAGON_BREATH, points.get(0), 10, 0.2, 0.2, 0.2, 0.1F);
+                    location.getWorld().playSound(location, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 2f, 0F);
+                    location.getWorld().spawnParticle(Particle.CLOUD, points.get(0), 10, 0.2, 0.2, 0.2, 0.1F);
                 }
 
 
