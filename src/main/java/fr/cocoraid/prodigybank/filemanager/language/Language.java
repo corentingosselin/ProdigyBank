@@ -65,20 +65,31 @@ public class Language {
     public String swatting = " : §3The swat team is coming now...";
     public String doors_closed = "§4Locked up ! : §cYou must use a bomb to escape...";
 
+
+    //ACTION BAR TIMER
     public String time_left_type = "§cTIME LEFT: §4%time §cBEFORE %type ";
-    public String time_swat_type = "§7SWAT";
+    public String time_swat_type = "§3SWAT";
+    public String time_doors_type = "§7DOORS";
     public String time_jail_type = "§4JAIL";
 
-    public String out_warning = "§cWarning : §7The bank has not been robbed";
-    public String bank_left_not_robbed = "§cBank left : §7While the bank has not been robbed";
-    public String bank_leader_left_not_robbed = "§cLeader surrender : §7While the bank has not been robbed";
-    public String bank_left_robbed = "§3Congratulation : §bYou have successfully robbed the bank !";
-    public String go_to_jail = "§4You failed ! : §cYou just lose %percentage of your money";
+    public String time_over = "§cTIME OVER ! You are sent to jail...";
 
-    public String owner_died = "§4Leader Dead! : §cYou just lose %percentage of your money";
+    public String title_left_warning = "§cWarning : §7The bank has not been robbed";
+    public String title_bank_left = "§cBank left : §7While the bank has not been robbed";
+    public String title_bank_leader_left = "§cLeader surrender : §7While the bank has not been robbed";
 
-    public String area_restricted = "§4Area restricted ! : §cRobbery in progress, SWAT is coming...";
-    public String hostage_notify = "§4Hold UP ! : §cYou are now hostage (pvp enabled)";
+    public String title_bank_owner_success = "§3Congratulation : §bYou have successfully robbed the bank !";
+    public String title_bank_member_success = "§3Congratulation : §bThe leader has left the bank...";
+    public String title_reward = "§2Reward : §bYou get now %amount dollars";
+
+    public String title_failed = "§4You failed ! : §cYou just lose %percentage of your money";
+    public String title_owner_died = "§4Leader Died ! : §cYou are now jailed....";
+    public String title_owner_self_died = "§4You Died ! : §cYour squad has been jailed...";
+    public String title_member_self_died = "§4You Died ! : §cYou were excluded from the squad";
+    public String title_member_notify_died = " : §c%player has been killed by %staff";
+
+    public String title_area_restricted = "§4Area restricted ! : §cRobbery in progress, SWAT is coming...";
+    public String title_hostage_notify = "§4Hold UP ! : §cYou are now hostage (pvp enabled)";
 
 
     public String chest_key_name = "§6Safe Deposit Key";

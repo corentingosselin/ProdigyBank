@@ -34,7 +34,7 @@ public class HoldUp {
         POLICE, SWAT, DOORS_LOCKED, JAIL;
     }
 
-    private RobberyStep robberyStep;
+    private int robberyStepID = 0;
     private int time = config.getRobberyLimit();
     private ArrayDeque<ItemStack> keys = new ArrayDeque<>();
 
@@ -56,19 +56,20 @@ public class HoldUp {
     //call this when leader has reached the exit
     public void succed() {
         squad.reward();
-        squad.sendSubTitle(lang.bank_left_robbed);
+        squad.sendOwnerSubTitle(lang.title_bank_owner_success);
+        squad.sendTeamSubTitle(lang.title_bank_member_success);
         endHoldUp();
     }
 
     //when the leader died
     public void fail() {
         squad.getSquadMembers().forEach(s -> squad.failSquadMember(s, config.getPercentJailed()));
-        squad.sendTeamSubTitle(lang.bank_leader_left_not_robbed);
-        squad.sendOwnerSubTitle(lang.bank_left_not_robbed);
+        squad.sendTeamSubTitle(lang.title_owner_died);
+        squad.sendOwnerSubTitle(lang.title_failed);
         new BukkitRunnable() {
             @Override
             public void run() {
-                squad.sendSubTitle(new StringBuilder(lang.go_to_jail).toString().replace("%percentage",String.valueOf(config.getPercentJailed())));
+                squad.sendSubTitle(new StringBuilder(lang.title_failed).toString().replace("%percentage",String.valueOf(config.getPercentJailed())));
             }
         }.runTaskLater(instance, 20 * 3);
         endHoldUp();
@@ -77,6 +78,15 @@ public class HoldUp {
     //when the leader left the area
     public void abandon() {
 
+    }
+
+    private void nextPhase() {
+        robberyStepID++;
+        if(bank.getSwatTeam().getSwat_points().isEmpty()) {
+            nextPhase();
+        } else if(bank.getDoors_to_lock().isEmpty()) {
+            nextPhase();
+        }
     }
 
     public void startHoldup(Squad squad) {
@@ -88,19 +98,14 @@ public class HoldUp {
         this.squad = squad;
 
 
-        if(!bank.getSwatTeam().getSwat_points().isEmpty()) {
-            this.robberyStep = RobberyStep.SWAT;
-        } else if(!bank.getDoors_to_lock().isEmpty()) {
-            this.robberyStep = RobberyStep.DOORS_LOCKED;
-        } else {
-            this.robberyStep = RobberyStep.JAIL;
-        }
-
 
         //small delay
         new BukkitRunnable() {
             @Override
             public void run() {
+                if(bank.getHoldUp() == null) return;
+
+
                 if(robberyStep == RobberyStep.SWAT)
                     squad.sendSubTitle(new StringBuilder(lang.time_left_notify_swat).toString()
                             .replace("%time", String.valueOf(config.getRobberyLimit())));
@@ -108,7 +113,7 @@ public class HoldUp {
                     squad.sendSubTitle(new StringBuilder(lang.time_left_notify_escape).toString()
                             .replace("%time", String.valueOf(config.getRobberyLimit())));
             }
-        }.runTaskLater(instance, 40);
+        }.runTaskLater(instance, 20*4);
 
 
         //init targets
@@ -137,9 +142,9 @@ public class HoldUp {
         startTask();
 
         this.isHoldup = true;
-
-
     }
+
+
 
     private String timeMessage;
     private List<UUID> warned = new ArrayList<>();

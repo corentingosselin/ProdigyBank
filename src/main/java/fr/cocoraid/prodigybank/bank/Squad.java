@@ -5,6 +5,7 @@ import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,14 @@ public class Squad {
     public void reward() {
         //not the right algo
         //need to divide between each member, the owner has a bigger percentage (configurable)
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+            }
+        }.runTaskLater(ProdigyBank.getInstance(),20*3);
+
        /* getSquadMembers().forEach(s -> {
             EconomyBridge.giveMoney(s,moneycollected);
         });*/
