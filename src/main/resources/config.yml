@@ -23,5 +23,6 @@ money-collected-sound: ITEM_ARMOR_EQUIP_CHAIN
 time-limit-before-swatting: 120
 time-limit-before-jail: 60
 number-of-swat-per-point: 1
-percentage-money-confiscated-jail: 50
-percentage-money-confiscated-die: 30
+percentage-money-confiscated-jail: 30
+percentage-money-confiscated-die: 10
+percentage-money-confiscated-leave: 20

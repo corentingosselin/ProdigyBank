@@ -5,34 +5,19 @@ import fr.cocoraid.prodigybank.bank.staff.authority.PoliceStaff;
 import fr.cocoraid.prodigybank.bank.staff.authority.SwatTeam;
 import fr.cocoraid.prodigybank.bank.staff.member.BankerStaff;
 import fr.cocoraid.prodigybank.bank.staff.member.HostessStaff;
-import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
-import fr.cocoraid.prodigybank.nms.NMS;
 import fr.cocoraid.prodigybank.setupbank.Cuboid;
-import fr.cocoraid.prodigybank.utils.Utils;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.event.DespawnReason;
-import net.citizensnpcs.api.event.SpawnReason;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.trait.Equipment;
-import net.citizensnpcs.trait.LookClose;
-import org.bukkit.*;
-import org.bukkit.block.Banner;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.mcmonkey.sentinel.SentinelTrait;
-import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Bank {
 
@@ -43,6 +28,11 @@ public class Bank {
     private ProdigyBank instance = ProdigyBank.getInstance();
     private Language lang = instance.getLanguage();
     private ConfigLoader config = instance.getConfigLoader();
+
+    public ConfigLoader getConfig() {
+        return config;
+    }
+
     private BankLoader bankLoader = instance.getBankLoader();
 
     private World world;

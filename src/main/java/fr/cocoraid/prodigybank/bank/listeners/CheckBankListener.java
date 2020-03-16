@@ -61,30 +61,22 @@ public class CheckBankListener implements Listener {
         HoldUp holdup = e.getBank().getHoldUp();
         if(holdup.getHostages().contains(e.getPlayer())) {
             //hostage escape
-
-        } else if(holdup.getSquad().getOwner().equals(e.getPlayer())) {
-
-            if(bank.getVaultDoor().isDestroyed() && bank.getChests().stream().filter(c -> c.isChestOpened()).findAny().isPresent()) {
-                //sucess
-                squad.reward();
-                squad.sendSubTitle(lang.bank_left_robbed);
-                holdup.endHoldUp();
-                return;
+            return;
+        }
+        boolean robbed = bank.getVaultDoor().isDestroyed() && bank.getChests().stream().filter(c -> c.isChestOpened()).findAny().isPresent();
+        //check if the leader is leaving the bank
+         if(holdup.getSquad().getOwner().equals(e.getPlayer())) {
+            //check for vault destroyed and 1 chest opened at least
+            if(robbed) {
+                holdup.succed();
             } else {
-                squad.getSquadMembers().forEach(s -> squad.failSquadMember(s, config.getPercentJailed()));
-                squad.sendTeamSubTitle(lang.bank_leader_left_not_robbed);
-                squad.sendOwnerSubTitle(lang.bank_left_not_robbed);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        squad.sendSubTitle(new StringBuilder(lang.go_to_jail).toString().replace("%percentage",String.valueOf(config.getPercentJailed())));
-                    }
-                }.runTaskLater(instance, 20 * 3);
-                endHoldUp();
-                return;
-
+                holdup.fail();
             }
-
+        } else {
+            // squad is leaving the bank without robbery
+            if(!robbed && holdup.getSquad().getSquadMembers().contains(e.getPlayer())) {
+                holdup.getSquad().failSquadMember(e.getPlayer(),bank.getConfig().getPercentDie());
+            }
         }
 
     }

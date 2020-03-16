@@ -53,6 +53,32 @@ public class HoldUp {
     }
 
 
+    //call this when leader has reached the exit
+    public void succed() {
+        squad.reward();
+        squad.sendSubTitle(lang.bank_left_robbed);
+        endHoldUp();
+    }
+
+    //when the leader died
+    public void fail() {
+        squad.getSquadMembers().forEach(s -> squad.failSquadMember(s, config.getPercentJailed()));
+        squad.sendTeamSubTitle(lang.bank_leader_left_not_robbed);
+        squad.sendOwnerSubTitle(lang.bank_left_not_robbed);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                squad.sendSubTitle(new StringBuilder(lang.go_to_jail).toString().replace("%percentage",String.valueOf(config.getPercentJailed())));
+            }
+        }.runTaskLater(instance, 20 * 3);
+        endHoldUp();
+    }
+
+    //when the leader left the area
+    public void abandon() {
+
+    }
+
     public void startHoldup(Squad squad) {
 
         //send start messages
@@ -108,7 +134,7 @@ public class HoldUp {
             cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_CONDUIT_ACTIVATE,2,0);
         });
 
-      startTask();
+        startTask();
 
         this.isHoldup = true;
 
@@ -119,7 +145,7 @@ public class HoldUp {
     private List<UUID> warned = new ArrayList<>();
     private void startTask() {
         this.holdUpTask = new BukkitRunnable() {
-            boolean warning = false;
+
 
             @Override
             public void run() {
@@ -130,16 +156,9 @@ public class HoldUp {
                 int tick = (time % 20) * 3;
                 timeMessage = String.format("%02d:%02d:%02d", minutes, seconds,tick);
                 if(time % 20 == 0) {
-
-
-
-
-                    //register custom events
                     Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld())).forEach(cur -> {
-
                         //send warnings:
                         if(!warned.contains(cur.getUniqueId())) {
-
                             if (squad.getSquadMembers().contains(cur) && bank.getBankCuboid().isInWithMarge(cur.getLocation(), -5)) {
                                 warned.add(cur.getUniqueId());
                                 String msg = lang.out_warning;
@@ -154,9 +173,7 @@ public class HoldUp {
                             }.runTaskLater(instance,20*5);
                         }
 
-
-
-
+                        //register custom events
                         if(!getPlayersInside().contains(cur) && bank.getBankCuboid().isIn(cur)) {
                             EnterBankEvent e = new EnterBankEvent(cur, bank);
                             Bukkit.getPluginManager().callEvent(e);
@@ -172,31 +189,8 @@ public class HoldUp {
 
                     });
 
-
-
-
-
-
-                    //check owner leave area
-                    if (!bank.getBankCuboid().isIn(squad.getOwner().getLocation())) {
-                        //send warning
-                        if (!warning) {
-                            squad.sendSubTitle(lang.out_warning);
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    warning = false;
-                                }
-                            }.runTaskLater(instance, 20 * 5);
-                        }
-
-
-                    }
-                }
-
-
-                //chest fixed
-                if(time % 5 == 0)
+                }//chest fixed
+                else if(time % 5 == 0)
                     bank.getChests().stream().filter(chest -> chest.isChestOpened()).forEach(chest -> {
                         NMS.setChestOpen(chest.getChest(),true);
                     });

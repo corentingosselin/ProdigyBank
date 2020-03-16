@@ -37,6 +37,10 @@ public class ConfigLoader {
         return config.getInt("percentage-money-confiscated-die");
     }
 
+    public int getPercentLeave() {
+        return config.getInt("percentage-money-confiscated-leave");
+    }
+
     public int getPercentJailed() {
         return config.getInt("percentage-money-confiscated-jail");
     }

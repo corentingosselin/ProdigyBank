@@ -4,8 +4,6 @@ import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ public class Squad {
 
 
 
-    private void reward() {
+    public void reward() {
         //not the right algo
         //need to divide between each member, the owner has a bigger percentage (configurable)
        /* getSquadMembers().forEach(s -> {
@@ -43,6 +41,7 @@ public class Squad {
         });*/
 
     }
+
 
 
     public void failSquadMember(Player player, int percentage) {
