@@ -14,15 +14,19 @@ swat-skin-name:
   - 'blsst'
   - 'UnBatoComun'
 min-chest-money: 100
-max-chest-moneyt: 1000
+max-chest-money: 1000
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 money-material: GOLD_INGOT
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 money-collected-sound: ITEM_ARMOR_EQUIP_CHAIN
 # Time in seconds
+time-limit-before-doors: 60
 time-limit-before-swatting: 120
 time-limit-before-jail: 60
+
+
 number-of-swat-per-point: 1
 percentage-money-confiscated-jail: 30
 percentage-money-confiscated-die: 10
 percentage-money-confiscated-leave: 20
+reward-percent-owner: 30

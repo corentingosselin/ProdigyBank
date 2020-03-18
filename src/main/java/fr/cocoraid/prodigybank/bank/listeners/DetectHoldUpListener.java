@@ -19,6 +19,8 @@ public class DetectHoldUpListener implements Listener {
         this.instance = instance;
     }
 
+    //todo make other player not squad, can't damage staff
+
     @EventHandler
     public void detectDamage(NPCDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player) {
@@ -30,7 +32,8 @@ public class DetectHoldUpListener implements Listener {
             if(bank.isStaffMember(e.getNPC())) {
                 if(!bank.getHoldUp().isHoldup()) {
                     if(!instance.getSquads().containsKey(p.getUniqueId()))
-                        instance.createSquad(bank,p);
+                        instance.createSquad(p);
+
                     bank.getHoldUp().startHoldup(instance.getSquads().get(p.getUniqueId()));
                 } else {
                     if(bank.getBankerStaff().getBanker().equals(e.getNPC())) {
@@ -47,7 +50,7 @@ public class DetectHoldUpListener implements Listener {
                             p.playSound(p.getLocation(),Sound.ENTITY_VILLAGER_NO,1,2);
                         }
                     }
-                    //add target for all staff if he's not already added
+
                 }
                 if(bank.isNonViolentStaffMember(e.getNPC())) {
                     e.setDamage(0);

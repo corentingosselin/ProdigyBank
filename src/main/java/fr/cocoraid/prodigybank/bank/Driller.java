@@ -55,10 +55,9 @@ public class Driller {
                     return;
                 }
                 points.forEach(p -> {
-                    for (Player cur : Bukkit.getOnlinePlayers()) {
-                        if(!cur.getWorld().equals(location.getWorld())) return;
-                        cur.getWorld().spawnParticle(Particle.REDSTONE, p, 1, 0.2, 0.2, 0.2, 0.2F);
-                    }
+                   // p.getWorld().spawnParticle(Particle.REDSTONE, p, 1, new Particle.DustOptions(Color.fromBGR(0, 0, 254), 1));
+                    p.getWorld().spawnParticle(Particle.SNEEZE, p, 1,0,0,0);
+
                 });
 
                 if(shooting) {
@@ -70,7 +69,8 @@ public class Driller {
                         Location p = points.get(index);
                         for (Player cur : Bukkit.getOnlinePlayers()) {
                             if(!cur.getWorld().equals(location.getWorld())) return;
-                            cur.getWorld().spawnParticle(Particle.CLOUD, p, 1, 0, 0, 0, 0);
+                            cur.getWorld().spawnParticle(Particle.CLOUD, p, 0, 0, 0, 0, 0);
+                            location.getWorld().spawnParticle(Particle.FLASH, p,1);
                         }
                     }
 
@@ -79,6 +79,7 @@ public class Driller {
                         instance.getBank().getVaultDoor().getBlocks().forEach(b -> {
                             for (Player cur : Bukkit.getOnlinePlayers()) {
                                 if(!cur.getWorld().equals(location.getWorld())) return;
+                                cur.getWorld().spawnParticle(Particle.CLOUD, b.getLocation(), 5, 1, 1, 1, 0.4F);
                                 cur.getWorld().spawnParticle(Particle.CRIT_MAGIC, b.getLocation(), 5, 1, 1, 1, 0.4F);
                             }
                         });
@@ -90,15 +91,18 @@ public class Driller {
 
                 if(time % (2 * 20) == 0) {
                     instance.getBank().getVaultDoor().breach();
-                    location.getWorld().playSound(location, Sound.BLOCK_BEACON_AMBIENT, 2f, 0F);
+                    location.getWorld().playSound(location, Sound.BLOCK_BEACON_AMBIENT, 1f, 0F);
                 }
 
                 time++;
                 if(time % (20 * 3) == 0) {
                     this.shooting = true;
                     this.i = 0;
-                    location.getWorld().playSound(location, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 2f, 0F);
-                    location.getWorld().spawnParticle(Particle.CLOUD, points.get(0), 10, 0.2, 0.2, 0.2, 0.1F);
+                    location.getWorld().playSound(location, Sound.BLOCK_BEACON_ACTIVATE, 2f, 0F);
+                    //LAUNCH TRAIL
+                    location.getWorld().spawnParticle(Particle.CLOUD, points.get(0), 4, 0.2, 0.2, 0.2, 0.1F);
+                    location.getWorld().spawnParticle(Particle.FLASH, points.get(0), 4, 0.2, 0.2, 0.2, 0.1F);
+
                 }
 
 

@@ -26,6 +26,8 @@ public class HostessStaff extends Staff {
         super.addSquadTarget();
         SentinelTrait hostessB = depositHostess.getTrait(SentinelTrait.class);
         SentinelTrait hostessA = withdrawHostess.getTrait(SentinelTrait.class);
+        new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(hostessA.allAvoids);
+        new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(hostessB.allAvoids);
         for (Player player : holdup.getSquad().getSquadMembers()) {
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).addToList(hostessA.allAvoids);
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).addToList(hostessB.allAvoids);
@@ -38,6 +40,8 @@ public class HostessStaff extends Staff {
         super.resetSquadTargets();
         SentinelTrait hostessB = depositHostess.getTrait(SentinelTrait.class);
         SentinelTrait hostessA = withdrawHostess.getTrait(SentinelTrait.class);
+        new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).removeFromList(hostessA.allAvoids);
+        new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).removeFromList(hostessB.allAvoids);
         for (Player player : holdup.getSquad().getSquadMembers()) {
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).removeFromList(hostessA.allAvoids);
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).removeFromList(hostessB.allAvoids);

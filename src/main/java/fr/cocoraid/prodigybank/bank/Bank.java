@@ -49,6 +49,7 @@ public class Bank {
     private VaultDoor vaultDoor;
 
     private Location jail;
+    private Location exit;
     private List<SafeDeposit> chests;
 
     //OPTIONAL
@@ -61,6 +62,7 @@ public class Bank {
                 NPC withdrawHostess,
                 NPC banker,
                 Location jail,
+                Location exit,
                 List<SafeDeposit> chests) {
         holdups.putIfAbsent(this, new HoldUp(this));
         this.bankCuboid = bankArea;
@@ -71,6 +73,7 @@ public class Bank {
         this.policeStaff = new PoliceStaff(this);
         this.swatTeam = new SwatTeam(this);
         this.jail = jail;
+        this.exit = exit;
 
         this.chests = chests;
         this.world = bankCuboid.getPoint1().getWorld();
@@ -141,9 +144,6 @@ public class Bank {
 
 
 
-
-
-
     public void setDoors_to_lock(List<Cuboid> doors_to_lock) {
         this.doors_to_lock = doors_to_lock;
     }
@@ -171,6 +171,10 @@ public class Bank {
         return hostessStaff;
     }
 
+
+    public Location getExit() {
+        return exit;
+    }
 
     public SwatTeam getSwatTeam() {
         return swatTeam;

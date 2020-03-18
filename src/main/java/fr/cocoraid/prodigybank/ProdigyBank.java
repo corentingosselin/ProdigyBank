@@ -34,8 +34,8 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
 
     private Map<UUID, Squad> squads = new HashMap<>();
-    public void createSquad(Bank bank,Player owner) {
-        squads.put(owner.getUniqueId(),new Squad(bank,owner));
+    public void createSquad(Player owner) {
+        squads.put(owner.getUniqueId(),new Squad(owner));
     }
 
     public Map<UUID, Squad> getSquads() {

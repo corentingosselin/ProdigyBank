@@ -26,22 +26,11 @@ public class RobbersDieListener implements Listener {
     public void rooberDie(PlayerDeathEvent e) {
         if(!bank.getHoldUp().isHoldup()) return;
         Squad squad = bank.getHoldUp().getSquad();
-        if(squad.getSquadMembers().contains(e.getEntity())) {
-            squad.getSquadMembers().remove(e.getEntity());
-            if(squad.getOwner().equals(e.getEntity())) {
-                e.setDeathMessage("");
-                squad.getSquadMembers().forEach(s -> {
-                    squad.failSquadMember(s,config.getPercentDie());
-                });
-                //30% of money
-                squad.sendTeamSubTitle(new StringBuilder(lang.owner_died).toString()
-                        .replace("%percentage", String.valueOf(config.getPercentDie())));
-
-                squad.sendOwnerSubTitle(new StringBuilder(lang.go_to_jail).toString()
-                        .replace("%percentage", String.valueOf(config.getPercentDie())));
-                bank.getHoldUp().endHoldUp();
-
-            }
+        if(squad.getOwner().equals(e.getEntity())) {
+            e.setDeathMessage("");
+            bank.getHoldUp().failOwnerDied(e.getEntity());
+        } else if(squad.getSquadMembers().contains(e.getEntity())) {
+            squad.removeSquadMember(e.getEntity(), Squad.MemberFailedType.DIED);
         }
     }
 

@@ -146,7 +146,13 @@ public class ProdigyBankSetupCMD extends BaseCommand {
 
     @Subcommand("setup jail") @Conditions("admin|world")
     public void onJailSetup(Player player) {
-        process.setupEndJail(player.getLocation());
+        process.setupJail(player.getLocation());
+    }
+
+
+    @Subcommand("setup exit") @Conditions("admin|world")
+    public void onExitSetup(Player player) {
+        process.setupExit(player.getLocation());
     }
 
     /**

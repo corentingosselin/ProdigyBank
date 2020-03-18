@@ -35,9 +35,11 @@ public class PoliceStaff extends Staff  {
             SentinelTrait sentinel = p.getTrait(SentinelTrait.class);
             p.getTrait(LookClose.class).setRandomLook(false);
             p.getTrait(LookClose.class).toggle();
+            new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(sentinel.allTargets);
             for (Player player : holdup.getSquad().getSquadMembers()) {
                 new SentinelTargetLabel("uuid:" + player.getUniqueId()).addToList(sentinel.allTargets);
             }
+
         });
     }
 
@@ -55,6 +57,7 @@ public class PoliceStaff extends Staff  {
         super.resetSquadTargets();
         police.forEach(p -> {
             SentinelTrait sentinel = p.getTrait(SentinelTrait.class);
+            new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).removeFromList(sentinel.allTargets);
             holdup.getSquad().getSquadMembers().forEach(s -> {
                 new SentinelTargetLabel("uuid:" + s.getUniqueId()).removeFromList(sentinel.allTargets);
             });

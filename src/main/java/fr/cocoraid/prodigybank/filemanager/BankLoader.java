@@ -45,6 +45,7 @@ public class BankLoader {
     private static final String VAULT_DOOR_POINT2 = "vault-door.point2";
 
     private static final String JAIL = "jail";
+    private static final String EXIT = "exit";
 
     //chests
     private static final String CHESTS = "chests";
@@ -70,6 +71,7 @@ public class BankLoader {
         Cuboid vaultDoor = new Cuboid(data.getLocation(VAULT_DOOR_POINT1), data.getLocation(VAULT_DOOR_POINT2));
 
         Location jail = data.getLocation(JAIL);
+        Location exit = data.getLocation(EXIT);
         List<Location> locations = (List<Location>) data.getList(CHESTS);
         List<SafeDeposit> chests = new ArrayList<>();
         locations.forEach(l -> {
@@ -149,6 +151,7 @@ public class BankLoader {
                 withdraw,
                 banker,
                 jail,
+                exit,
                 chests
         );
 

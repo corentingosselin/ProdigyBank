@@ -39,6 +39,7 @@ public class SetupBankProcess {
     private NPC depositHostess;
     private NPC withdrawHostess;
     private NPC banker;
+    private Location exit;
     private Location jail;
     private LinkedList<SafeDeposit> chests = new LinkedList<>();
 
@@ -53,6 +54,7 @@ public class SetupBankProcess {
         this.withdrawHostess = null;
         this.banker = null;
         this.jail = null;
+        this.exit = null;
         this.world = null;
         this.waitingForChest = false;
         chests.clear();
@@ -74,7 +76,8 @@ public class SetupBankProcess {
         BANKER(3),
         DEPOSIT_HOSTESS(4),
         WITHDRAW_HOSTESS(5),
-        CHEST_POINTS(6);
+        CHEST_POINTS(6),
+        JAIL(7);
 
         int index;
         BankProcessStep(int index) {
@@ -267,20 +270,31 @@ public class SetupBankProcess {
         }
     }
 
-
-
-    public void removeChest(Block chest) {
-        chests.remove(chest);
-    }
-
-    public void setupEndJail(Location location) {
+    public void setupJail(Location location) {
         if(chests.isEmpty()) {
             admin.sendMessage(lang.chest_missing);
             return;
         }
+        if(currentStep.getIndex() > BankProcessStep.JAIL.getIndex()) {
+            admin.sendMessage(lang.step_already_done);
+            return;
+        }
+        this.currentStep = BankProcessStep.JAIL;
         setWaitingForChest(false);
         this.jail = location;
 
+
+    }
+
+
+    public void setupExit(Location location) {
+        if(jail == null) {
+            admin.sendMessage(new StringBuilder(lang.step_missing)
+                    .toString()
+                    .replace("%step","Jail"));
+            return;
+        }
+        this.exit = location;
         Bank bank = new Bank(bankCuboid,
                 vaultCuboid,
                 vaultDoorCuboid,
@@ -288,6 +302,7 @@ public class SetupBankProcess {
                 withdrawHostess,
                 banker,
                 jail,
+                exit,
                 chests);
 
         instance.setBank(bank);
@@ -299,8 +314,14 @@ public class SetupBankProcess {
         admin.sendMessage(lang.end_setup);
         reset();
 
-
     }
+
+
+    public void removeChest(Block chest) {
+        chests.remove(chest);
+    }
+
+
 
     public void cancelCreation() {
         if(withdrawHostess != null) withdrawHostess.destroy();

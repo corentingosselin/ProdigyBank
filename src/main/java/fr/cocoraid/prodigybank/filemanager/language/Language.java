@@ -59,12 +59,15 @@ public class Language {
     public String withdraw_hostess_name = "§bWithdraw";
     public String banker_name = "§4Banker";
 
-    public String holdup_starting = "§4Hold up : §7Tell me where is the banker right now !";
-    public String time_left_notify_swat = "§3You now have  : §b%time minutes before swat team coming";
-    public String time_left_notify_escape = "§cEscape ! : §7%time minutes to escape before jail !";
-    public String swatting = " : §3The swat team is coming now...";
-    public String doors_closed = "§4Locked up ! : §cYou must use a bomb to escape...";
+    public String title_holdup_starting = "§4Hold up : §7Tell me where is the banker right now !";
+    public String title_holdup_help = "§3Info : §cFind the vault §f> §aStart Driller §f> §2Collect keys from the banker";
 
+    public String title_swatting = " : §3The swat team is coming now...";
+    public String title_doors_closed = "§4Locked up ! : §cYou must use a bomb to escape...";
+
+    public String title_time_left_notify_doors = "§cEscape ! : §7%time minutes to escape before jail !";
+    public String title_time_left_notify_swat = "§3You now have  : §b%time minutes before swat team coming";
+    public String title_time_left_notify_escape = "§cEscape ! : §7%time minutes to escape before jail !";
 
     //ACTION BAR TIMER
     public String time_left_type = "§cTIME LEFT: §4%time §cBEFORE %type ";
@@ -82,7 +85,7 @@ public class Language {
     public String title_bank_member_success = "§3Congratulation : §bThe leader has left the bank...";
     public String title_reward = "§2Reward : §bYou get now %amount dollars";
 
-    public String title_failed = "§4You failed ! : §cYou just lose %percentage of your money";
+    public String title_failed = "§4You failed ! : §cYou just lose %amount of your money";
     public String title_owner_died = "§4Leader Died ! : §cYou are now jailed....";
     public String title_owner_self_died = "§4You Died ! : §cYour squad has been jailed...";
     public String title_member_self_died = "§4You Died ! : §cYou were excluded from the squad";

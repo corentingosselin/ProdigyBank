@@ -63,8 +63,16 @@ public class ConfigLoader {
         return Sound.valueOf(config.getString("money-collected-sound", "ENTITY_EXPERIENCE_ORB_PICKUP"));
     }
 
-    public int getRobberyLimit() {
+    public int getOwnerRewardPercent() {
+        return config.getInt("reward-percent-owner",30);
+    }
+
+    public int getTimeBeforeSwat() {
         return config.getInt("time-limit-before-swatting",120) * 20;
+    }
+
+    public int getTimeBeforeDoors() {
+        return config.getInt("time-limit-before-doors",60) * 20;
     }
 
     public int getTimeBeforeJail() {

@@ -3,7 +3,9 @@ package fr.cocoraid.prodigybank.bank.listeners;
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.HoldUp;
+import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.customevents.EnterBankEvent;
+import fr.cocoraid.prodigybank.customevents.QuitBankEvent;
 import fr.cocoraid.prodigybank.utils.Utils;
 import net.citizensnpcs.api.event.NPCDeathEvent;
 import org.bukkit.Bukkit;
@@ -47,16 +49,16 @@ public class CheckBankListener implements Listener {
     public void strangerEnter(EnterBankEvent e) {
         if(!e.getBank().equals(bank)) return;
         //if squad member or hostage, lets ignore
-        if(e.getBank().getHoldUp().getSquad().getSquadMembers().contains(e.getPlayer())) return;
+        if(e.getBank().getHoldUp().getSquad().isFromSquad(e.getPlayer())) return;
         if(e.getBank().getHoldUp().getHostages().contains(e.getPlayer())) return;
         e.setCancelled(true);
         //Utils.bumpEntity(cur,cur.getLocation(),3,0.1D);
-        String msg = instance.getLanguage().area_restricted;
+        String msg = instance.getLanguage().title_area_restricted;
         Utils.sendTitle(e.getPlayer(),msg);
     }
 
     @EventHandler
-    public void quitTheBank(EnterBankEvent e) {
+    public void quitTheBank(QuitBankEvent e) {
         if(!e.getBank().equals(bank)) return;
         HoldUp holdup = e.getBank().getHoldUp();
         if(holdup.getHostages().contains(e.getPlayer())) {
@@ -70,12 +72,12 @@ public class CheckBankListener implements Listener {
             if(robbed) {
                 holdup.succed();
             } else {
-                holdup.fail();
+                holdup.abandon(e.getPlayer());
             }
         } else {
             // squad is leaving the bank without robbery
             if(!robbed && holdup.getSquad().getSquadMembers().contains(e.getPlayer())) {
-                holdup.getSquad().failSquadMember(e.getPlayer(),bank.getConfig().getPercentDie());
+                holdup.getSquad().removeSquadMember(e.getPlayer(), Squad.MemberFailedType.LEFT);
             }
         }
 

@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mcmonkey.sentinel.SentinelTrait;
+import org.mcmonkey.sentinel.SentinelUtilities;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class SwatTeam extends Staff {
 
                 npc.getNavigator().getDefaultParameters().range((float) 100);
                 SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+                npc.data().setPersistent("nameplate-visible", false);
                 sentinel.fightback = true;
                 sentinel.chaseRange = 100;
                 sentinel.range = 100;
@@ -73,9 +75,9 @@ public class SwatTeam extends Staff {
                 sentinel.respawnTime = -1;
                 npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
                 npc.data().setPersistent(NPC.PATHFINDER_OPEN_DOORS_METADATA, true);
-                npc.data().setPersistent("nameplate-visible", false);
-                npc.spawn(s);
 
+                npc.spawn(s);
+                new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(sentinel.allTargets);
                 holdup.getSquad().getSquadMembers().forEach(cur -> {
                     new SentinelTargetLabel("uuid:" + cur.getUniqueId()).addToList(sentinel.allTargets);
                 });
@@ -95,8 +97,14 @@ public class SwatTeam extends Staff {
 
     public boolean isSwatMember(Entity entity) {
         //death entity event, npc is called 2 times, 1 with null
+
         if(entity == null) return false;
-        return entity.hasMetadata("NPC") && swats.stream().filter(npc -> npc.getEntity().getName().equals(entity.getName())).findAny().isPresent();
+        if(!entity.hasMetadata("NPC")) return false;
+        SentinelTrait sentinel = SentinelUtilities.tryGetSentinel(entity);
+        if (sentinel != null) {
+           return swats.stream().filter(npc -> npc.equals(sentinel.getNPC())).findAny().isPresent();
+        }
+        return false;
 
     }
 

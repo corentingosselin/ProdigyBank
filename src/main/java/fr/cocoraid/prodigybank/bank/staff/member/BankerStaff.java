@@ -22,6 +22,7 @@ public class BankerStaff extends Staff  {
     public void refreshStaff() {
         super.refreshStaff();
         SentinelTrait bankerTrait = banker.getTrait(SentinelTrait.class);
+        new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).removeFromList(bankerTrait.allAvoids);
         for (Player player : holdup.getSquad().getSquadMembers()) {
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).removeFromList(bankerTrait.allAvoids);
         }
@@ -32,6 +33,7 @@ public class BankerStaff extends Staff  {
 
     public void scared() {
         SentinelTrait bankerTrait = banker.getTrait(SentinelTrait.class);
+        new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(bankerTrait.allAvoids);
         for (Player player : holdup.getSquad().getSquadMembers()) {
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).addToList(bankerTrait.allAvoids);
         }
