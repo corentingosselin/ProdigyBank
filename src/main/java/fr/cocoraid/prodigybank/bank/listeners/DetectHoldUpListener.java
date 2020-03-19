@@ -2,7 +2,9 @@ package fr.cocoraid.prodigybank.bank.listeners;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
+import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
+import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,16 +21,21 @@ public class DetectHoldUpListener implements Listener {
         this.instance = instance;
     }
 
-    //todo make other player not squad, can't damage staff
+    @EventHandler
+    public void detectHoldup(NPCLeftClickEvent e) {
+        Player p = e.getClicker();
+        if(!p.hasPermission("prodigybank.holdup")) {
+            e.setCancelled(true);
+            return;
+        }
 
+    }
+
+    //todo make other player not squad, can't damage staff
     @EventHandler
     public void detectDamage(NPCDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
-            if(!p.hasPermission("prodigybank.holdup")) {
-                e.setCancelled(true);
-                return;
-            }
             if(bank.isStaffMember(e.getNPC())) {
                 if(!bank.getHoldUp().isHoldup()) {
                     if(!instance.getSquads().containsKey(p.getUniqueId()))

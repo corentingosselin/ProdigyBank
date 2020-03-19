@@ -24,7 +24,6 @@ time-limit-before-doors: 60
 time-limit-before-swatting: 120
 time-limit-before-jail: 60
 
-
 number-of-swat-per-point: 1
 percentage-money-confiscated-jail: 30
 percentage-money-confiscated-die: 10

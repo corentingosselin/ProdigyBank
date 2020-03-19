@@ -148,8 +148,6 @@ public class Bank {
         this.doors_to_lock = doors_to_lock;
     }
 
-
-
     public void setChests(List<SafeDeposit> chests) {
         this.chests = chests;
     }

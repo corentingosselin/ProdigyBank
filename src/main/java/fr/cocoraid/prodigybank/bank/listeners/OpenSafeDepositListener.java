@@ -27,6 +27,7 @@ public class OpenSafeDepositListener implements Listener {
         if(e.getEntity() instanceof Player) {
             if(!bank.getHoldUp().isHoldup()) return;
             Player p = (Player) e.getEntity();
+            if(!bank.getHoldUp().getSquad().isFromSquad(p)) return;
             if(bank.getHoldUp().getAllDroppedMoney().contains(e.getItem())) {
                 e.setCancelled(true);
                 e.getItem().remove();
@@ -40,10 +41,9 @@ public class OpenSafeDepositListener implements Listener {
     public void cancelKeyPlace(BlockPlaceEvent e) {
         Bank b = instance.getBank();
         if(!b.getHoldUp().isHoldup()) return;
-        b.getHoldUp().getKeys().forEach(itemStack -> {
-            System.out.println("key " + itemStack);
-        });
-        System.out.println("final  " + e.getItemInHand());
+        if(b.getHoldUp().getKeys().stream().filter(k -> k.hasItemMeta() && e.getItemInHand().hasItemMeta() && k.getItemMeta().equals(e.getItemInHand().hasItemMeta())).findAny().isPresent()) {
+            e.setCancelled(true);
+        }
         if(b.getHoldUp().getKeys().contains(e.getItemInHand())) {
             e.setCancelled(true);
         }
@@ -62,7 +62,9 @@ public class OpenSafeDepositListener implements Listener {
             Player p = e.getPlayer();
 
             bank.getChests().stream().filter(c -> !c.isChestOpened() && c.getKey().getItemMeta().getLocalizedName().equalsIgnoreCase(chestKey)).findAny().ifPresent(c -> {
-                if(p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().equalsIgnoreCase(chestKey)) {
+                if(p.getInventory().getItemInMainHand().hasItemMeta()
+                        && p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName() != null
+                        && p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().equalsIgnoreCase(chestKey)) {
                     p.getInventory().remove(p.getInventory().getItemInMainHand());
                     c.openChest(bank);
                 } else {

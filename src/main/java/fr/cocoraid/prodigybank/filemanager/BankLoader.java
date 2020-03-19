@@ -143,6 +143,7 @@ public class BankLoader {
             }
         }
 
+
         Bank bank = new Bank(
                 bankArea,
                 vaultArea,
@@ -191,6 +192,7 @@ public class BankLoader {
         data.set(WITHDRAW,b.getHostessStaff().getWithdrawHostess().getId());
 
         data.set(JAIL,b.getJail());
+        data.set(EXIT,b.getExit());
 
         saveChests(false);
         saveDoors(false);

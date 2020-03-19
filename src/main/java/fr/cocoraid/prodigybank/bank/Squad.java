@@ -46,7 +46,8 @@ public class Squad {
 
 
         int ownerReward = config.getOwnerRewardPercent() * moneyCollected / 100;
-        int memberReward = (moneyCollected - ownerReward) / squad.size();
+
+        int memberReward = (moneyCollected - ownerReward) / (!squad.isEmpty() ? squad.size() : 1);
 
         new BukkitRunnable() {
             @Override
@@ -59,9 +60,10 @@ public class Squad {
 
 
         EconomyBridge.giveMoney(owner,ownerReward);
-        getSquadMembers().stream().filter(cur -> !cur.equals(owner)).forEach(s -> {
-            EconomyBridge.giveMoney(s,memberReward);
-        });
+        if(!squad.isEmpty())
+            getSquadMembers().stream().filter(cur -> !cur.equals(owner)).forEach(s -> {
+                EconomyBridge.giveMoney(s,memberReward);
+            });
     }
 
 
