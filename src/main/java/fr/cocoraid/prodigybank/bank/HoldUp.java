@@ -9,6 +9,7 @@ import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.nms.NMS;
 import fr.cocoraid.prodigybank.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -109,6 +110,11 @@ public class HoldUp {
         updateTiming();
         RobberyStep current = phases.getFirst();
         if(current == RobberyStep.DOORS_LOCKED) {
+            bank.getDoors_to_lock().forEach(c -> {
+                c.getBlockList().stream().filter(b -> b.getType() == Material.AIR).forEach(b -> {
+                    b.setType(Material.IRON_BARS);
+                });
+            });
             squad.sendSubTitle(lang.title_doors_closed);
         } else if(current == RobberyStep.SWAT) {
             bank.getSwatTeam().spawnSwat();
@@ -248,6 +254,8 @@ public class HoldUp {
             @Override
             public void run() {
 
+                if(phases.isEmpty()) return;
+
                 int minutes = time / (60 * 20);
                 int seconds = (time / 20) % 60;
                 int tick = (time % 20) * 3;
@@ -256,7 +264,7 @@ public class HoldUp {
                 Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld())).forEach(cur -> {
                     //send warnings:
                     if(!warned.contains(cur.getUniqueId())) {
-                        if (squad.isFromSquad(cur) && bank.getBankCuboid().isInWithMarge(cur.getLocation(), -2)) {
+                        if (!squad.isFromSquad(cur) && bank.getBankCuboid().isIn(cur.getLocation())) {
                             warned.add(cur.getUniqueId());
                             String msg = lang.title_left_warning;
                             Utils.sendTitle(cur, msg);
@@ -280,7 +288,7 @@ public class HoldUp {
                             return;
                         }
                         getPlayersInside().add(cur);
-                    } else if(!bank.getBankCuboid().isIn(cur) && getPlayersInside().contains(cur)) {
+                    } else if(!bank.getBankCuboid().isInWithMarge(cur.getLocation(), 5) && getPlayersInside().contains(cur)) {
                         getPlayersInside().remove(cur);
                         Bukkit.getPluginManager().callEvent(new QuitBankEvent(cur, bank));
                     }
@@ -384,6 +392,11 @@ public class HoldUp {
         getAllDroppedMoney().forEach(item -> item.remove());
         getAllDroppedMoney().clear();
 
+        bank.getDoors_to_lock().forEach(c -> {
+            c.getBlockList().stream().filter(b -> b.getType() == Material.IRON_BARS).forEach(b -> {
+                b.setType(Material.AIR);
+            });
+        });
 
         phases.clear();
         this.time = 0;
