@@ -8,6 +8,7 @@ import fr.cocoraid.prodigybank.bank.Driller;
 import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.bank.listeners.*;
 import fr.cocoraid.prodigybank.bridge.EconomyBridge;
+import fr.cocoraid.prodigybank.bridge.WorldGuardBridge;
 import fr.cocoraid.prodigybank.commands.MainCMD;
 import fr.cocoraid.prodigybank.commands.ProdigyBankSetupCMD;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
@@ -20,6 +21,7 @@ import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;
 import fr.cocoraid.prodigybank.utils.CC;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,6 +54,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     private Language language;
     private ConfigLoader configLoader;
     private PaperCommandManager manager;
+    private WorldGuardBridge worldGuardBridge;
     
     @Override
     public void onEnable() {
@@ -65,6 +68,11 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         } else if(Bukkit.getPluginManager().getPlugin("Sentinel") == null) {
             setEnabled(false);
             c.sendMessage("§cSentinel is required to run ProdigyBank !");
+        }
+
+         if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+            worldGuardBridge = new WorldGuardBridge(this);
+            c.sendMessage("§bWorldGuard soft depency found !");
         }
 
         if (!EconomyBridge.setupEconomy()) {
@@ -102,6 +110,11 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
     }
 
+
+    public void allowPvp(Location location, boolean enable) {
+        if(worldGuardBridge != null)
+            worldGuardBridge.setPvp(location,enable);
+    }
 
     @Override
     public void onDisable() {

@@ -27,7 +27,10 @@ public class OpenSafeDepositListener implements Listener {
         if(e.getEntity() instanceof Player) {
             if(!bank.getHoldUp().isHoldup()) return;
             Player p = (Player) e.getEntity();
-            if(!bank.getHoldUp().getSquad().isFromSquad(p)) return;
+            if(!bank.getHoldUp().getSquad().isFromSquad(p)) {
+                e.setCancelled(true);
+                return;
+            }
             if(bank.getHoldUp().getAllDroppedMoney().contains(e.getItem())) {
                 e.setCancelled(true);
                 e.getItem().remove();

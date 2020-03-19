@@ -55,8 +55,7 @@ public class Driller {
                     return;
                 }
                 points.forEach(p -> {
-                   // p.getWorld().spawnParticle(Particle.REDSTONE, p, 1, new Particle.DustOptions(Color.fromBGR(0, 0, 254), 1));
-                    p.getWorld().spawnParticle(Particle.SNEEZE, p, 1,0,0,0);
+                    p.getWorld().spawnParticle(Particle.REDSTONE, p, 1, new Particle.DustOptions(Color.fromBGR(0, 0, 254), 1));
 
                 });
 

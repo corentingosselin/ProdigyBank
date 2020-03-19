@@ -15,15 +15,13 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <repository>
-            <id>enginehub-maven</id>
-            <url>http://maven.enginehub.org/repo/</url>
-        </repository>
 
         <repository>
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
+
+
 
         <repository>
             <id>everything</id>

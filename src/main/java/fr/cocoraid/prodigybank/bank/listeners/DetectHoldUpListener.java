@@ -8,7 +8,9 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -29,6 +31,23 @@ public class DetectHoldUpListener implements Listener {
             return;
         }
 
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void entityDamage(EntityDamageByEntityEvent e) {
+        if(bank.getHoldUp().isHoldup()) {
+            if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+                Player damager = (Player) e.getDamager();
+                Player victim = (Player) e.getEntity();
+                if(bank.getBankCuboid().isIn(damager) && bank.getBankCuboid().isIn(victim)) {
+                    e.setCancelled(false);
+                }
+
+            }
+
+
+        }
     }
 
     //todo make other player not squad, can't damage staff
