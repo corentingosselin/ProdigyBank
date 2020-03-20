@@ -6,8 +6,10 @@ import fr.cocoraid.prodigybank.bank.SafeDeposit;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
+import fr.cocoraid.prodigybank.filemanager.skin.SkinData;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.LookClose;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,9 +17,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mcmonkey.sentinel.SentinelTrait;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 public class SetupBankProcess {
 
@@ -178,9 +182,7 @@ public class SetupBankProcess {
 
 
     public void setupHostess(Location l) {
-        String skinName = config.getHostessSkinName();
         String name = "";
-
         if(currentStep == BankProcessStep.DEPOSIT_HOSTESS) {
             if(currentStep.getIndex() > BankProcessStep.DEPOSIT_HOSTESS.getIndex()) {
                 admin.sendMessage(lang.step_already_done);
@@ -199,7 +201,7 @@ public class SetupBankProcess {
                 admin.sendMessage(lang.step_already_done);
                 return;
             }
-            skinName = config.getBankerSkinName();
+
             name = lang.banker_name;
         } else {
             admin.sendMessage(new StringBuilder(lang.step_missing)
@@ -209,19 +211,30 @@ public class SetupBankProcess {
 
         }
 
-        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
+        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
         npc.addTrait(LookClose.class);
         npc.getTrait(LookClose.class).setRange(2);
         npc.getTrait(LookClose.class).setRandomLook(true);
         npc.getTrait(LookClose.class).setRealisticLooking(true);
         npc.getTrait(LookClose.class).toggle();
         npc.data().setPersistent("nameplate-visible", true);
-        npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA,skinName);
         npc.addTrait(SentinelTrait.class);
         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
         sentinel.speed = 1.25F;
         npc.getNavigator().getLocalParameters().baseSpeed(1.25F);
         npc.spawn(l);
+        npc.setName(name);
+        BankProcessStep savedStep = currentStep;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                SkinData skinData = config.getHostessSkin();
+                if(savedStep == BankProcessStep.BANKER)
+                    skinData = config.getBankerSkin();
+                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),skinData.getSignature(),skinData.getTexture());
+            }
+        }.runTaskLater(instance,20 * 10);
+
 
         if(currentStep == BankProcessStep.BANKER) {
             banker = npc;

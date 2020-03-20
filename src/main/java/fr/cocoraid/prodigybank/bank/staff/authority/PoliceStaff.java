@@ -2,11 +2,13 @@ package fr.cocoraid.prodigybank.bank.staff.authority;
 
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.staff.Staff;
+import fr.cocoraid.prodigybank.filemanager.skin.SkinData;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.SpawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
+import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.LookClose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,6 +22,7 @@ import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PoliceStaff extends Staff  {
 
@@ -68,7 +71,7 @@ public class PoliceStaff extends Staff  {
 
 
     public void addPoliceMember(Player player, Location location) {
-        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, config.getRandomPoliceSkin());
+        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
         npc.addTrait(LookClose.class);
         npc.getTrait(LookClose.class).setRange(2);
         npc.getTrait(LookClose.class).setRandomLook(true);
@@ -95,6 +98,8 @@ public class PoliceStaff extends Staff  {
         npc.data().setPersistent(NPC.PATHFINDER_OPEN_DOORS_METADATA,true);
         npc.data().setPersistent("nameplate-visible", false);
         npc.spawn(location);
+        SkinData data = config.getRandomPoliceSkin();
+        ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),data.getSignature(),data.getTexture());
         police.add(npc);
         player.sendMessage(
                 new StringBuilder(lang.object_added).toString()

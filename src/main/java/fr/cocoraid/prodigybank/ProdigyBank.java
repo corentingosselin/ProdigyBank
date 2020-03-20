@@ -166,25 +166,37 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     {
         ItemMeta meta = drillerItem.getItemMeta();
         meta.setDisplayName("§7Vault Driller");
-        meta.setLore(Arrays.asList("- §cMust be placed inside a bank during holdup"));
-        meta.setLore(Arrays.asList("- §cCan be placed only once"));
-        meta.setLore(Arrays.asList("- §cStay near to build the driller"));
+        meta.setLore(Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cStay near to build the driller"));
         drillerItem.setItemMeta(meta);
     }
     private void loadCustomRecipes() {
-        NamespacedKey key = new NamespacedKey(this, "driller");
-        ShapedRecipe recipe = new ShapedRecipe(key, drillerItem);
-        recipe.shape(
+        NamespacedKey drillerKey = new NamespacedKey(this, "driller");
+        ShapedRecipe drillerRecipe = new ShapedRecipe(drillerKey, drillerItem);
+        drillerRecipe.shape(
                 "BTB"
                 , "CAC"
                 , "SGS");
-        recipe.setIngredient('B', Material.BLAZE_ROD);
-        recipe.setIngredient('C', Material.END_CRYSTAL);
-        recipe.setIngredient('T', Material.REDSTONE_TORCH);
-        recipe.setIngredient('G', Material.GRINDSTONE);
-        recipe.setIngredient('A', Material.BEACON);
-        recipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
-        Bukkit.addRecipe(recipe);
+        drillerRecipe.setIngredient('B', Material.BLAZE_ROD);
+        drillerRecipe.setIngredient('C', Material.END_CRYSTAL);
+        drillerRecipe.setIngredient('T', Material.REDSTONE_TORCH);
+        drillerRecipe.setIngredient('G', Material.GRINDSTONE);
+        drillerRecipe.setIngredient('A', Material.BEACON);
+        drillerRecipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
+        Bukkit.addRecipe(drillerRecipe);
+
+        NamespacedKey c4Key = new NamespacedKey(this, "driller");
+        ShapedRecipe c4Recipe = new ShapedRecipe(c4Key, drillerItem);
+        drillerRecipe.shape(
+                "BTB"
+                , "CAC"
+                , "SGS");
+        drillerRecipe.setIngredient('B', Material.BLAZE_ROD);
+        drillerRecipe.setIngredient('C', Material.END_CRYSTAL);
+        drillerRecipe.setIngredient('T', Material.REDSTONE_TORCH);
+        drillerRecipe.setIngredient('G', Material.GRINDSTONE);
+        drillerRecipe.setIngredient('A', Material.BEACON);
+        drillerRecipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
+        Bukkit.addRecipe(drillerRecipe);
     }
 
     public ItemStack getDrillerItem() {

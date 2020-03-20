@@ -2,13 +2,14 @@ package fr.cocoraid.prodigybank.filemanager;
 
 
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.filemanager.skin.SkinData;
+import fr.cocoraid.prodigybank.filemanager.skin.SkinType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ConfigLoader {
 
@@ -16,6 +17,9 @@ public class ConfigLoader {
     private ProdigyBank plugin;
     private FileConfiguration config;
 
+
+
+    private Map<SkinType, List<SkinData>> skins = new HashMap<>();
 
     public ConfigLoader(ProdigyBank plugin) {
         this.plugin = plugin;
@@ -31,6 +35,22 @@ public class ConfigLoader {
         }
         plugin.saveDefaultConfig();
         config = plugin.getConfig();
+
+
+        skins.putIfAbsent(SkinType.POLICE,new ArrayList<>());
+        for (String id : config.getConfigurationSection("police-skin").getKeys(false)) {
+            String texture = config.getString("police-skin." + id + ".texture");
+            String signature = config.getString("police-skin." + id + ".signature");
+            skins.get(SkinType.POLICE).add(new SkinData(texture,signature));
+        }
+
+        skins.putIfAbsent(SkinType.SWAT,new ArrayList<>());
+        for (String id : config.getConfigurationSection("swat-skin").getKeys(false)) {
+            String texture = config.getString("swat-skin." + id + ".texture");
+            String signature = config.getString("swat-skin." + id + ".signature");
+            skins.get(SkinType.SWAT).add(new SkinData(texture,signature));
+        }
+
     }
 
     public int getPercentDie() {
@@ -48,11 +68,15 @@ public class ConfigLoader {
     public String getLanguage() {
         return config.getString("language");
     }
-    public String getHostessSkinName() {
-        return config.getString("hostess-skin-name");
+
+
+    public SkinData getHostessSkin() {
+        SkinData data = new SkinData(config.getString("hostess-skin.texture"),config.getString("hostess-skin.signature"));
+        return data;
     }
-    public String getBankerSkinName() {
-        return config.getString("banker-skin-name");
+    public SkinData getBankerSkin() {
+        SkinData data = new SkinData(config.getString("banker-skin.texture"),config.getString("banker-skin.signature"));
+        return data;
     }
 
     public Material getMoneyType() {
@@ -91,15 +115,15 @@ public class ConfigLoader {
         return config.getInt("max-chest-money",1000);
     }
 
-    public String getRandomPoliceSkin() {
+    public SkinData getRandomPoliceSkin() {
         Random r = new Random();
-        List<String> list =  config.getStringList("police-skin-name");
+        List<SkinData> list =  skins.get(SkinType.POLICE);
         return list.get(r.nextInt(list.size()));
     }
 
-    public String getRandomSwatSkin() {
+    public SkinData getRandomSwatSkin() {
         Random r = new Random();
-        List<String> list =  config.getStringList("swat-skin-name");
+        List<SkinData> list =  skins.get(SkinType.SWAT);
         return list.get(r.nextInt(list.size()));
     }
 

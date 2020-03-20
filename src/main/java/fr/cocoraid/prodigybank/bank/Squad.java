@@ -45,8 +45,7 @@ public class Squad {
     public void reward() {
 
 
-        int ownerReward = config.getOwnerRewardPercent() * moneyCollected / 100;
-
+        int ownerReward = squad.isEmpty() ? moneyCollected : config.getOwnerRewardPercent() * moneyCollected / 100;
         int memberReward = (moneyCollected - ownerReward) / (!squad.isEmpty() ? squad.size() : 1);
 
         new BukkitRunnable() {

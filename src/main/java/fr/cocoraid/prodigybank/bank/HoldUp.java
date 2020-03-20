@@ -265,21 +265,20 @@ public class HoldUp {
                 int tick = (time % 20) * 3;
                 timeMessage = String.format("%02d:%02d:%02d", minutes, seconds,tick);
 
-                Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld())).forEach(cur -> {
+                Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld()) && squad.isFromSquad(cur)).forEach(cur -> {
                     //send warnings:
-                    if(!warned.contains(cur.getUniqueId())) {
-                        if (squad.isFromSquad(cur) && !bank.getBankCuboid().isIn(cur.getLocation())) {
+                    if (!bank.getBankCuboid().isIn(cur.getLocation()) && getPlayersInside().contains(cur)) {
+                        if(!warned.contains(cur.getUniqueId())) {
                             warned.add(cur.getUniqueId());
                             String msg = lang.title_left_warning;
                             Utils.sendTitle(cur, msg);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    warned.remove(cur.getUniqueId());
+                                }
+                            }.runTaskLater(instance,20*5);
                         }
-
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                warned.remove(cur.getUniqueId());
-                            }
-                        }.runTaskLater(instance,20*5);
                     }
 
 
@@ -411,7 +410,9 @@ public class HoldUp {
             keys.forEach(k -> {
                 s.getInventory().remove(k);
             });
-
+        });
+        keys.forEach(k -> {
+            getSquad().getOwner().getInventory().remove(k);
         });
         virtualKeys.clear();
         keys.clear();

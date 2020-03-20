@@ -2,9 +2,11 @@ package fr.cocoraid.prodigybank.bank.staff.authority;
 
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.staff.Staff;
+import fr.cocoraid.prodigybank.filemanager.skin.SkinData;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
+import net.citizensnpcs.npc.skin.SkinnableEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +23,7 @@ import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SwatTeam extends Staff {
 
@@ -46,7 +49,7 @@ public class SwatTeam extends Staff {
     public void spawnSwat() {
         swat_points.forEach(s -> {
             for (int k = 0; k < config.getSwatPerPoint(); k++) {
-                NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, config.getRandomSwatSkin());
+                NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
                 npc.addTrait(SentinelTrait.class);
                 npc.getTrait(Equipment.class)
                         .set(Equipment.EquipmentSlot.HAND,  new ItemStack(Material.DIAMOND_SWORD));
@@ -63,7 +66,7 @@ public class SwatTeam extends Staff {
 
                 npc.getNavigator().getDefaultParameters().range((float) 100);
                 SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-                npc.data().setPersistent("nameplate-visible", false);
+                npc.data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, false);
                 sentinel.fightback = true;
                 sentinel.chaseRange = 100;
                 sentinel.range = 100;
@@ -77,6 +80,8 @@ public class SwatTeam extends Staff {
                 npc.data().setPersistent(NPC.PATHFINDER_OPEN_DOORS_METADATA, true);
 
                 npc.spawn(s);
+                SkinData data = config.getRandomSwatSkin();
+                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),data.getSignature(),data.getTexture());
                 new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(sentinel.allTargets);
                 holdup.getSquad().getSquadMembers().forEach(cur -> {
                     new SentinelTargetLabel("uuid:" + cur.getUniqueId()).addToList(sentinel.allTargets);

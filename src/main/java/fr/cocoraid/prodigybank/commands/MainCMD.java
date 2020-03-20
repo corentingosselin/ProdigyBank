@@ -11,6 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 @CommandAlias("prodigybank|pb")
 public class MainCMD extends BaseCommand {
 
@@ -29,7 +31,7 @@ public class MainCMD extends BaseCommand {
             Location l = player.getLocation();
             NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
             npc.spawn(l);
-            ((SkinnableEntity) npc.getEntity()).setSkinPersistent("1f070ad7-9ee3-446a-a26a-8563146f711b",
+            ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),
                     "hYsWnVE/XEPHDRjpMlblOoqGKI3jsUMBSBM9pG4Z91un7Y0TflPPyYVxBl3gnCL9dkO2iSEp4xuATMfFFUo3KvRaN47HUklL86KZSctDqej7CGzn3uGar+KP29uacyNZCuYFo98kwP8KHYaHLLCoEdoOUKOvFqZZkFJbRJbuhy2Fj+Kr47zfIDOiZfsacyAH2OQ0vbBg5+tRZi9lANniGUD6hc9zp660uOUu6B8yYBnUprCPnM2MUkV9lV9J7J7jd5oaOtj6rm5BDmYNwgWjLEJCdw5McqH6/KdMwj86fFs/2AGh8KVPXKzr6m7kMTJbpTFQDDKoo0aXXpHT/zAgAgq9Sx/sKn9ZN+hsJhDZqNvDV/h2GZe0bDyJ9t319mwkzMXLdN8QFYr3I+916eWmrztnc0Bj4drft+5EaEKTRDfgzrCHDVtguAUcOHk160qNApumzBfj6L3amOeiwmOwAktBZZCCiD+0Gz9MlVZ5eGHm2iruYi6SujIG6bIT+9/gzUnHo4mQSRzLBsKuYeWDLlNrwof6xleSM8WXV2RaUZDjJ7VOedkyzhEOa2ShP+D8CrYgwM+tv5nHzN/yajiOvQ1gPcx4UiTHMBXHzpUykjRyWDRQgEbpAdHwnrjq75C3QZlIsNr3KRtZ4CTfGKE+rJqFNufFHONoiX4kTNnn9YU=",
                     "eyJ0aW1lc3RhbXAiOjE1ODMxMjIwMDA0MzQsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2E3MDM0YzIzNDczNzhhOTBjMDkxMTNiYWM3ODI5YzkzYWIzMTBjNDNiOTI0N2ZiMDcxZWE0M2U5MTA2NGE0ZDkifX19");
 

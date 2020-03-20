@@ -125,12 +125,9 @@ public class Driller {
             Location targeter = null;
             @Override
             public void run() {
-                //3 block distance
-                System.out.println("dist " + builder.getLocation().distanceSquared(location));
-                if(builder.getLocation().distanceSquared(location)  > 6) {
+                if(builder.getLocation().distanceSquared(location)  < 6 * 6) {
                     Utils.sendTitle(builder,":§cYou are too far from the driller to build it");
-                    return;
-                }
+                } else return;
 
                 Model m = queue.removeFirst();
                 Vector v = UtilMath.rotateAroundAxisY(m.getVector().clone(), Math.toRadians(-location.getYaw() - 90));
