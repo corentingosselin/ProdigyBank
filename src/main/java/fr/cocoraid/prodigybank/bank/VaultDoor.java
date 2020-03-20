@@ -40,7 +40,6 @@ public class VaultDoor {
         Location l = cuboid.getPoint1();
         this.health -= 5;
         if(health <= 0) {
-            ProdigyBank.getInstance().getArmorStandModel().getDriller().resetTarget();
             blocks.forEach(b -> {
                 l.getWorld().spawnParticle(Particle.EXPLOSION_HUGE,b.getLocation(),1,0.5,0.5,0.5,0.1F);
                 b.setType(Material.AIR);
@@ -69,6 +68,9 @@ public class VaultDoor {
 
     }
 
+    public int getHealth() {
+        return health;
+    }
 
     public boolean isDestroyed() {
         return destroyed;

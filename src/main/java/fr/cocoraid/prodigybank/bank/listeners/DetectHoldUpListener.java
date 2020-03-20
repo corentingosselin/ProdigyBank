@@ -6,11 +6,13 @@ import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import org.bukkit.Sound;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -50,6 +52,19 @@ public class DetectHoldUpListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void pickupKey(EntityPickupItemEvent e) {
+        if(e.getEntity() instanceof Player) {
+            if(bank.getHoldUp().isHoldup()) {
+                if(bank.getHoldUp().getSquad().isFromSquad((Player)e.getEntity())) {
+                    if (bank.getHoldUp().getDroppedKeys().contains(e.getItem())) {
+                        bank.getHoldUp().getDroppedKeys().remove(e.getItem());
+                    }
+                }
+            }
+        }
+    }
+
     //todo make other player not squad, can't damage staff
     @EventHandler
     public void detectDamage(NPCDamageByEntityEvent e) {
@@ -63,13 +78,14 @@ public class DetectHoldUpListener implements Listener {
                     bank.getHoldUp().startHoldup(instance.getSquads().get(p.getUniqueId()));
                 } else {
                     if(bank.getBankerStaff().getBanker().equals(e.getNPC())) {
-                        if(!bank.getHoldUp().getKeys().isEmpty()) {
+                        if(!bank.getHoldUp().getVirtualKeys().isEmpty()) {
                             int randomNum = ThreadLocalRandom.current().nextInt(0, 100);
                             if (randomNum >= 80) {
                                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_CHICKEN_EGG,1,1);
-                                e.getNPC().getStoredLocation().getWorld()
-                                        .dropItemNaturally(e.getNPC().getStoredLocation(), bank.getHoldUp().getKeys().getFirst());
-                                bank.getHoldUp().getKeys().removeFirst();
+                                Item item = e.getNPC().getStoredLocation().getWorld()
+                                        .dropItemNaturally(e.getNPC().getStoredLocation(), bank.getHoldUp().getVirtualKeys().getFirst());
+                                bank.getHoldUp().getKeys().add(bank.getHoldUp().getVirtualKeys().removeFirst());
+                                bank.getHoldUp().getDroppedKeys().add(item);
                             }
                         } else {
                             p.sendTitle("", instance.getLanguage().no_more_key, 20 * 2, 5, 5);

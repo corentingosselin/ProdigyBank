@@ -33,9 +33,13 @@ public class HoldUp {
     private int time;
     private LinkedList<RobberyStep> phases = new LinkedList<>();
 
-    private ArrayDeque<ItemStack> keys = new ArrayDeque<>();
+    private ArrayDeque<ItemStack> virtualKeys = new ArrayDeque<>();
+    private List<ItemStack> keys = new ArrayList<>();
+    private List<Item> droppedKeys = new ArrayList<>();
 
     private Bank bank;
+    private Driller driller;
+
     private boolean isHoldup;
     private Squad squad;
     private BukkitTask holdUpTask;
@@ -223,7 +227,7 @@ public class HoldUp {
         //prepare new encrypted key for safe chest
         bank.getChests().forEach(c -> {
             ItemStack i = c.generateKey();
-            keys.add(i);
+            virtualKeys.add(i);
         });
 
 
@@ -264,7 +268,7 @@ public class HoldUp {
                 Bukkit.getOnlinePlayers().stream().filter(cur -> cur.getWorld().equals(bank.getWorld())).forEach(cur -> {
                     //send warnings:
                     if(!warned.contains(cur.getUniqueId())) {
-                        if (!squad.isFromSquad(cur) && bank.getBankCuboid().isIn(cur.getLocation())) {
+                        if (squad.isFromSquad(cur) && !bank.getBankCuboid().isIn(cur.getLocation())) {
                             warned.add(cur.getUniqueId());
                             String msg = lang.title_left_warning;
                             Utils.sendTitle(cur, msg);
@@ -305,6 +309,7 @@ public class HoldUp {
                 //update cooldown message
                 sendCountDownMessage();
 
+                if(phases.isEmpty()) return;
                 RobberyStep current = phases.getFirst();
                 if(current == RobberyStep.POLICE) {
                     updatePolice();
@@ -400,30 +405,44 @@ public class HoldUp {
 
         phases.clear();
         this.time = 0;
+
+        droppedKeys.forEach(k -> k.remove());
         getSquad().getSquadMembers().forEach(s -> {
             keys.forEach(k -> {
                 s.getInventory().remove(k);
             });
 
         });
+        virtualKeys.clear();
         keys.clear();
-
-
+        droppedKeys.clear();
         this.squad = null;
 
-        instance.getArmorStandModel().getDriller().destory();
+        if(getDriller() != null)
+            getDriller().destory();
         bank.getVaultDoor().reset();
 
         isHoldup = false;
     }
 
+    public Driller getDriller() {
+        return driller;
+    }
 
-    public ArrayDeque<ItemStack> getKeys() {
-        return keys;
+    public void setDriller(Driller driller) {
+        this.driller = driller;
+    }
+
+    public ArrayDeque<ItemStack> getVirtualKeys() {
+        return virtualKeys;
     }
 
     public List<Item> getAllDroppedMoney() {
         return allDroppedMoney;
+    }
+
+    public List<ItemStack> getKeys() {
+        return keys;
     }
 
     public boolean isHoldup() {
@@ -440,5 +459,9 @@ public class HoldUp {
 
     public List<Player> getPlayersInside() {
         return playersInside;
+    }
+
+    public List<Item> getDroppedKeys() {
+        return droppedKeys;
     }
 }

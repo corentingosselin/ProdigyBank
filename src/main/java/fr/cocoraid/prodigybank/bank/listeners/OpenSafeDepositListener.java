@@ -40,15 +40,17 @@ public class OpenSafeDepositListener implements Listener {
     }
 
 
+    //todo when key dropped, add to dropped list key
+
     @EventHandler
-    public void cancelKeyPlace(BlockPlaceEvent e) {
-        Bank b = instance.getBank();
-        if(!b.getHoldUp().isHoldup()) return;
-        if(b.getHoldUp().getKeys().stream().filter(k -> k.hasItemMeta() && e.getItemInHand().hasItemMeta() && k.getItemMeta().equals(e.getItemInHand().hasItemMeta())).findAny().isPresent()) {
-            e.setCancelled(true);
-        }
-        if(b.getHoldUp().getKeys().contains(e.getItemInHand())) {
-            e.setCancelled(true);
+    public void cancelKeyPlace(PlayerInteractEvent e) {
+        if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Bank b = instance.getBank();
+            if (!b.getHoldUp().isHoldup()) return;
+            if (b.getHoldUp().getKeys().contains(e.getPlayer().getInventory().getItemInMainHand())
+                    || b.getHoldUp().getKeys().contains(e.getPlayer().getInventory().getItemInOffHand())) {
+                e.setCancelled(true);
+            }
         }
 
     }

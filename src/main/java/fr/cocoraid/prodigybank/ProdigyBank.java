@@ -8,7 +8,6 @@ import fr.cocoraid.prodigybank.bank.Driller;
 import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.bank.listeners.*;
 import fr.cocoraid.prodigybank.bridge.EconomyBridge;
-import fr.cocoraid.prodigybank.bridge.WorldGuardBridge;
 import fr.cocoraid.prodigybank.commands.MainCMD;
 import fr.cocoraid.prodigybank.commands.ProdigyBankSetupCMD;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
@@ -16,21 +15,26 @@ import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.filemanager.language.LanguageLoader;
 import fr.cocoraid.prodigybank.filemanager.model.ArmorStandModel;
+import fr.cocoraid.prodigybank.filemanager.model.ModelType;
 import fr.cocoraid.prodigybank.setupbank.ChestPlaceListener;
+import fr.cocoraid.prodigybank.setupbank.RobberToolPlaceEvent;
 import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;
 import fr.cocoraid.prodigybank.utils.CC;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ProdigyBank extends JavaPlugin implements Listener {
 
@@ -54,8 +58,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     private Language language;
     private ConfigLoader configLoader;
     private PaperCommandManager manager;
-    private WorldGuardBridge worldGuardBridge;
-    
+
     @Override
     public void onEnable() {
         ConsoleCommandSender c = Bukkit.getServer().getConsoleSender();
@@ -70,17 +73,14 @@ public class ProdigyBank extends JavaPlugin implements Listener {
             c.sendMessage("§cSentinel is required to run ProdigyBank !");
         }
 
-         if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
-            worldGuardBridge = new WorldGuardBridge(this);
-            c.sendMessage("§bWorldGuard soft depency found !");
-        }
-
         if (!EconomyBridge.setupEconomy()) {
             setEnabled(false);
             getLogger().warning("Vault with a compatible economy plugin was not found!");
         }
 
         instance = this;
+        loadCustomRecipes();
+
         this.configLoader = new ConfigLoader(this);
         loadLanguage(c);
         setupBankProcess = new SetupBankProcess(this);
@@ -89,7 +89,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
         this.armorStandModel = new ArmorStandModel(this);
         armorStandModel.loadModels();
-        armorStandModel.setDriller(new Driller(this));
+
     }
 
     /**
@@ -110,11 +110,6 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
     }
 
-
-    public void allowPvp(Location location, boolean enable) {
-        if(worldGuardBridge != null)
-            worldGuardBridge.setPvp(location,enable);
-    }
 
     @Override
     public void onDisable() {
@@ -139,6 +134,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
     private void registerEvents() {
         Bukkit.getPluginManager().registerEvents(new ChestPlaceListener(this),this);
+        Bukkit.getPluginManager().registerEvents(new RobberToolPlaceEvent(this),this);
         Bukkit.getPluginManager().registerEvents(this,this);
     }
 
@@ -163,6 +159,36 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         c.sendMessage(CC.d_green + "Language: " + (language == null ? "english" : configLoader.getLanguage().toLowerCase()));
         if(language == null)
             language = LanguageLoader.getLanguage("english");
+    }
+
+
+    private ItemStack drillerItem = new ItemStack(Material.GRINDSTONE);
+    {
+        ItemMeta meta = drillerItem.getItemMeta();
+        meta.setDisplayName("§7Vault Driller");
+        meta.setLore(Arrays.asList("- §cMust be placed inside a bank during holdup"));
+        meta.setLore(Arrays.asList("- §cCan be placed only once"));
+        meta.setLore(Arrays.asList("- §cStay near to build the driller"));
+        drillerItem.setItemMeta(meta);
+    }
+    private void loadCustomRecipes() {
+        NamespacedKey key = new NamespacedKey(this, "driller");
+        ShapedRecipe recipe = new ShapedRecipe(key, drillerItem);
+        recipe.shape(
+                "BTB"
+                , "CAC"
+                , "SGS");
+        recipe.setIngredient('B', Material.BLAZE_ROD);
+        recipe.setIngredient('C', Material.END_CRYSTAL);
+        recipe.setIngredient('T', Material.REDSTONE_TORCH);
+        recipe.setIngredient('G', Material.GRINDSTONE);
+        recipe.setIngredient('A', Material.BEACON);
+        recipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
+        Bukkit.addRecipe(recipe);
+    }
+
+    public ItemStack getDrillerItem() {
+        return drillerItem;
     }
 
     public static ProdigyBank getInstance() {

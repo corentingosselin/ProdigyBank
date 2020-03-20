@@ -15,8 +15,6 @@ import java.util.*;
 
 public class ArmorStandModel {
 
-    private Driller driller;
-
     private Map<ModelType, List<Model>> models = new HashMap<>();
 
     private ProdigyBank instance;
@@ -80,11 +78,4 @@ public class ArmorStandModel {
         return models;
     }
 
-    public void setDriller(Driller driller) {
-        this.driller = driller;
-    }
-
-    public Driller getDriller() {
-        return driller;
-    }
 }

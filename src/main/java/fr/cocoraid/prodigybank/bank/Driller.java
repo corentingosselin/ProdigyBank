@@ -1,17 +1,20 @@
 package fr.cocoraid.prodigybank.bank;
 
-import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.filemanager.model.Model;
 import fr.cocoraid.prodigybank.filemanager.model.ModelType;
 import fr.cocoraid.prodigybank.nms.ReflectedArmorStand;
 import fr.cocoraid.prodigybank.utils.UtilMath;
+import fr.cocoraid.prodigybank.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Driller {
 
@@ -20,17 +23,19 @@ public class Driller {
     private boolean ready;
 
 
-    private ProdigyBank instance;
+
+    private Bank bank;
     private List<Model> models;
     private ArrayDeque<Model> queue = new ArrayDeque();
     private List<ReflectedArmorStand> armorStands = new ArrayList<>();
 
-    public Driller(ProdigyBank instance) {
-        this.instance = instance;
-        this.models = instance.getArmorStandModel().getModels().get(ModelType.DRILLER);
+    public Driller(Bank bank) {
+        this.bank = bank;
+        this.models = bank.getInstance().getArmorStandModel().getModels().get(ModelType.DRILLER);
         Collections.sort(models, (a, b) ->
                 a.getVector().getY() < b.getVector().getY() ? -1 : a.getVector().getY() == b.getVector().getY() ? 0 : 1);
     }
+
 
     private List<Location> points = new ArrayList<>();
     public void initTarget(Location location) {
@@ -40,7 +45,7 @@ public class Driller {
         for(int k = 0; k < 100; k++) {
             l.add(dir);
             points.add(new Location(l.getWorld(),l.getX(), l.getY(),l.getZ()));
-            if(instance.getBank().getVaultDoor().isVaultDoorBlock(l.getBlock()))
+            if(bank.getVaultDoor().isVaultDoorBlock(l.getBlock()))
                 break;
         }
         this.laserTask = new BukkitRunnable() {
@@ -49,7 +54,7 @@ public class Driller {
             boolean shooting = false;
             @Override
             public void run() {
-                if(points.isEmpty()) {
+                if(points.isEmpty() || bank.getVaultDoor().getHealth() <= 0) {
                     this.cancel();
                     laserTask = null;
                     return;
@@ -75,7 +80,7 @@ public class Driller {
 
                     i++;
                     if(i >= points.size()) {
-                        instance.getBank().getVaultDoor().getBlocks().forEach(b -> {
+                        bank.getVaultDoor().getBlocks().forEach(b -> {
                             for (Player cur : Bukkit.getOnlinePlayers()) {
                                 if(!cur.getWorld().equals(location.getWorld())) return;
                                 cur.getWorld().spawnParticle(Particle.CLOUD, b.getLocation(), 5, 1, 1, 1, 0.4F);
@@ -89,7 +94,7 @@ public class Driller {
                 }
 
                 if(time % (2 * 20) == 0) {
-                    instance.getBank().getVaultDoor().breach();
+                    bank.getVaultDoor().breach();
                     location.getWorld().playSound(location, Sound.BLOCK_BEACON_AMBIENT, 1f, 0F);
                 }
 
@@ -106,16 +111,11 @@ public class Driller {
 
 
             }
-        }.runTaskTimer(instance,0,0);
+        }.runTaskTimer(bank.getInstance(),0,0);
 
     }
 
-    public void resetTarget() {
-        if(laserTask != null && !laserTask.isCancelled())
-            laserTask.cancel();
-    }
-
-    public void build(Location location) {
+    public void build(Player builder, Location location) {
         if(ready) return;
         queue.addAll(models);
         Location spawn = location.clone();
@@ -125,6 +125,13 @@ public class Driller {
             Location targeter = null;
             @Override
             public void run() {
+                //3 block distance
+                System.out.println("dist " + builder.getLocation().distanceSquared(location));
+                if(builder.getLocation().distanceSquared(location)  > 6) {
+                    Utils.sendTitle(builder,":§cYou are too far from the driller to build it");
+                    return;
+                }
+
                 Model m = queue.removeFirst();
                 Vector v = UtilMath.rotateAroundAxisY(m.getVector().clone(), Math.toRadians(-location.getYaw() - 90));
                 Location l = spawn.clone().add(v);
@@ -150,7 +157,7 @@ public class Driller {
                 }
 
             }
-        }.runTaskTimerAsynchronously(instance,0,0);
+        }.runTaskTimerAsynchronously(bank.getInstance(),0,3);
 
     }
 

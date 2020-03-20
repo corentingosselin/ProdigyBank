@@ -178,6 +178,10 @@ public class Bank {
         return swatTeam;
     }
 
+    public ProdigyBank getInstance() {
+        return instance;
+    }
+
     public static Map<Bank, HoldUp> getHoldups() {
         return holdups;
     }
