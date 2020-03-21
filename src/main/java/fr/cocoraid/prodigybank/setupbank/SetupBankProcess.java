@@ -2,7 +2,7 @@ package fr.cocoraid.prodigybank.setupbank;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
-import fr.cocoraid.prodigybank.bank.SafeDeposit;
+import fr.cocoraid.prodigybank.bank.protection.SafeDeposit;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;

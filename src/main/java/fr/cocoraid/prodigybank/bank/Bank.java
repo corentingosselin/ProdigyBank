@@ -1,6 +1,9 @@
 package fr.cocoraid.prodigybank.bank;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bank.protection.SafeDeposit;
+import fr.cocoraid.prodigybank.bank.protection.doors.BankDoor;
+import fr.cocoraid.prodigybank.bank.protection.doors.VaultDoor;
 import fr.cocoraid.prodigybank.bank.staff.authority.PoliceStaff;
 import fr.cocoraid.prodigybank.bank.staff.authority.SwatTeam;
 import fr.cocoraid.prodigybank.bank.staff.member.BankerStaff;
@@ -53,7 +56,7 @@ public class Bank {
     private List<SafeDeposit> chests;
 
     //OPTIONAL
-    private List<Cuboid> doors_to_lock = new ArrayList<>();
+    private List<BankDoor> doors_to_lock = new ArrayList<>();
 
     public Bank(Cuboid bankArea,
                 Cuboid vaultArea,
@@ -89,7 +92,7 @@ public class Bank {
 
         if(!Cuboid.checkForAir(cuboid,admin)) return;
 
-        doors_to_lock.add(cuboid);
+        doors_to_lock.add(new BankDoor(cuboid));
         admin.sendMessage(
                 new StringBuilder(lang.object_added).toString()
                         .replace("%id",String.valueOf(doors_to_lock.size() - 1))
@@ -116,7 +119,7 @@ public class Bank {
         return chests;
     }
 
-    public List<Cuboid> getDoors_to_lock() {
+    public List<BankDoor> getDoors_to_lock() {
         return doors_to_lock;
     }
 
@@ -144,7 +147,7 @@ public class Bank {
 
 
 
-    public void setDoors_to_lock(List<Cuboid> doors_to_lock) {
+    public void setDoors_to_lock(List<BankDoor> doors_to_lock) {
         this.doors_to_lock = doors_to_lock;
     }
 

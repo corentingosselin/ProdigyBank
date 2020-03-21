@@ -37,6 +37,7 @@ public class CheckBankListener implements Listener {
 
 
 
+
     //prevent death message
     @EventHandler
     public void death(PlayerDeathEvent e) {

@@ -2,7 +2,8 @@ package fr.cocoraid.prodigybank.filemanager;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
-import fr.cocoraid.prodigybank.bank.SafeDeposit;
+import fr.cocoraid.prodigybank.bank.protection.SafeDeposit;
+import fr.cocoraid.prodigybank.bank.protection.doors.BankDoor;
 import fr.cocoraid.prodigybank.setupbank.Cuboid;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -159,7 +160,9 @@ public class BankLoader {
         bank.getPoliceStaff().setPolice(police);
         bank.getSwatTeam().setSwat_points(swats);
         bank.setChests(chests);
-        bank.setDoors_to_lock(doors);
+        List<BankDoor> bankdoors = new ArrayList<>();
+        doors.forEach(d -> bankdoors.add(new BankDoor(d)));
+        bank.setDoors_to_lock(bankdoors);
 
         instance.setBank(bank);
         System.out.println("[ProdigyBank] Bank successfully loaded !");
@@ -284,9 +287,9 @@ public class BankLoader {
     public void saveDoors(boolean write) {
         Bank b = instance.getBank();
         int i = 0;
-        for (Cuboid cuboid : b.getDoors_to_lock()) {
-            data.set(DOORS + "." + i + ".point1",cuboid.getPoint1());
-            data.set(DOORS + "." + i + ".point2",cuboid.getPoint2());
+        for (BankDoor door : b.getDoors_to_lock()) {
+            data.set(DOORS + "." + i + ".point1",door.getCuboid().getPoint1());
+            data.set(DOORS + "." + i + ".point2",door.getCuboid().getPoint2());
             i++;
         }
         if(write) saveData();

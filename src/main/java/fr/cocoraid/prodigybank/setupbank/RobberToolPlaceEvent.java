@@ -2,7 +2,7 @@ package fr.cocoraid.prodigybank.setupbank;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
-import fr.cocoraid.prodigybank.bank.Driller;
+import fr.cocoraid.prodigybank.bank.tools.Driller;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +19,7 @@ public class RobberToolPlaceEvent implements Listener {
 
     @EventHandler
     public void place(BlockPlaceEvent e) {
-        if(e.getItemInHand().equals(instance.getDrillerItem())) {
+        if(e.getItemInHand().equals(Driller.getDrillerItem())) {
             e.setCancelled(true);
             Bank.getHoldups().keySet().stream().filter(b -> b.getHoldUp().isHoldup()
                     && b.getHoldUp().getSquad().isFromSquad(e.getPlayer())

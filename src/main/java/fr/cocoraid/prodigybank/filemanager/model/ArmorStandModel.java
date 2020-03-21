@@ -1,7 +1,6 @@
 package fr.cocoraid.prodigybank.filemanager.model;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
-import fr.cocoraid.prodigybank.bank.Driller;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;

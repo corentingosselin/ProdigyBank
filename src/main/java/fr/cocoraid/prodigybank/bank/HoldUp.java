@@ -1,6 +1,8 @@
 package fr.cocoraid.prodigybank.bank;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bank.tools.C4;
+import fr.cocoraid.prodigybank.bank.tools.Driller;
 import fr.cocoraid.prodigybank.customevents.EnterBankEvent;
 import fr.cocoraid.prodigybank.customevents.QuitBankEvent;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
@@ -9,8 +11,8 @@ import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.nms.NMS;
 import fr.cocoraid.prodigybank.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +32,8 @@ public class HoldUp {
         POLICE, DOORS_LOCKED, SWAT, JAIL;
     }
 
+
+    private List<C4> C4s = new ArrayList<>();
     private int time;
     private LinkedList<RobberyStep> phases = new LinkedList<>();
 
@@ -114,10 +118,8 @@ public class HoldUp {
         updateTiming();
         RobberyStep current = phases.getFirst();
         if(current == RobberyStep.DOORS_LOCKED) {
-            bank.getDoors_to_lock().forEach(c -> {
-                c.getBlockList().stream().filter(b -> b.getType() == Material.AIR).forEach(b -> {
-                    b.setType(Material.IRON_BARS);
-                });
+            bank.getDoors_to_lock().forEach(d -> {
+               d.close();
             });
             squad.sendSubTitle(lang.title_doors_closed);
         } else if(current == RobberyStep.SWAT) {
@@ -396,10 +398,8 @@ public class HoldUp {
         getAllDroppedMoney().forEach(item -> item.remove());
         getAllDroppedMoney().clear();
 
-        bank.getDoors_to_lock().forEach(c -> {
-            c.getBlockList().stream().filter(b -> b.getType() == Material.IRON_BARS).forEach(b -> {
-                b.setType(Material.AIR);
-            });
+        bank.getDoors_to_lock().forEach(d -> {
+            d.reset();
         });
 
         phases.clear();
@@ -421,6 +421,16 @@ public class HoldUp {
 
         if(getDriller() != null)
             getDriller().destory();
+
+
+        getC4s().forEach(c4 -> {
+            c4.reset();
+        });
+
+        getC4s().clear();
+
+
+        bank.getVaultDoor().close();
         bank.getVaultDoor().reset();
 
         isHoldup = false;
@@ -460,6 +470,14 @@ public class HoldUp {
 
     public List<Player> getPlayersInside() {
         return playersInside;
+    }
+
+    public List<C4> getC4s() {
+        return C4s;
+    }
+
+    public boolean isC4Sticked(Block block) {
+        return getC4s().stream().filter(c4 -> c4.getStickedBlock().equals(block)).findAny().isPresent();
     }
 
     public List<Item> getDroppedKeys() {

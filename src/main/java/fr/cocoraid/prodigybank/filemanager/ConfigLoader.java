@@ -87,6 +87,28 @@ public class ConfigLoader {
         return Sound.valueOf(config.getString("money-collected-sound", "ENTITY_EXPERIENCE_ORB_PICKUP"));
     }
 
+    public int getBankDoorHealth() {
+        return config.getInt("bank-door-health",50);
+    }
+    public int getVaultDoorHealth() {
+        return config.getInt("vault-door-health",100);
+    }
+    public int getC4Damage() {
+        return config.getInt("c4-damage",5);
+    }
+    public int getDrillerDamage() {
+        return config.getInt("driller-damage",5);
+    }
+    public String getC4Texture() {
+        return config.getString("c4-texture","eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNlZTY5NGI1ZGYzNGY0MGQ1ZTc3NGJkMzA0NmRiODQ5ZTM0ZmY1NWE0ODJkMDczMWU5ZDdhN2JiNzRhMTIifX19");
+    }
+
+
+    public Material getBankDoorMaterial() {
+        return Material.valueOf(config.getString("bank-door-material","IRON_BARS"));
+    }
+
+
     public int getOwnerRewardPercent() {
         return config.getInt("reward-percent-owner",30);
     }

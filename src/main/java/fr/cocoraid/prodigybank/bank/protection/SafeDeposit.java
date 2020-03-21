@@ -1,6 +1,7 @@
-package fr.cocoraid.prodigybank.bank;
+package fr.cocoraid.prodigybank.bank.protection;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.nms.NMS;

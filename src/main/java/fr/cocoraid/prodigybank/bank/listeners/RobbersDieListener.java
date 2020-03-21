@@ -8,6 +8,8 @@ import fr.cocoraid.prodigybank.filemanager.language.Language;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class RobbersDieListener implements Listener {
 
@@ -32,6 +34,32 @@ public class RobbersDieListener implements Listener {
         } else if(squad.getSquadMembers().contains(e.getEntity())) {
             squad.removeSquadMember(e.getEntity(), Squad.MemberFailedType.DIED);
         }
+    }
+
+    @EventHandler
+    public void quitEvent(PlayerQuitEvent e) {
+        if(bank.getHoldUp().isHoldup()) {
+
+                if(bank.getHoldUp().getSquad().getOwner().equals(e.getPlayer())) {
+                    //notify squad
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if(e.getPlayer().isOnline()) {
+
+                            } else {
+
+                            }
+                        }
+                    }.runTaskLater(instance,20 * 10);
+                } else if(bank.getHoldUp().getSquad().getSquadMembers().contains(e.getPlayer())) {
+                    bank.getHoldUp().getSquad().getSquadMembers().remove(e.getPlayer());
+                }
+
+
+
+        }
+
     }
 
 }

@@ -1,5 +1,8 @@
-package fr.cocoraid.prodigybank.bank;
+package fr.cocoraid.prodigybank.bank.tools;
 
+import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bank.Bank;
+import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.filemanager.model.Model;
 import fr.cocoraid.prodigybank.filemanager.model.ModelType;
 import fr.cocoraid.prodigybank.nms.ReflectedArmorStand;
@@ -7,6 +10,8 @@ import fr.cocoraid.prodigybank.utils.UtilMath;
 import fr.cocoraid.prodigybank.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -18,10 +23,22 @@ import java.util.List;
 
 public class Driller {
 
+
+    private static Language lang = ProdigyBank.getInstance().getLanguage();
+
+    private static ItemStack drillerItem = new ItemStack(Material.GRINDSTONE);
+    static {
+        ItemMeta meta = drillerItem.getItemMeta();
+        meta.setDisplayName(lang.tool_driller_displayname);
+        meta.setLore(lang.tool_driller_lores);
+        drillerItem.setItemMeta(meta);
+    }
+
     private BukkitTask task;
     private BukkitTask laserTask;
     private boolean ready;
 
+    private int damage;
 
 
     private Bank bank;
@@ -32,6 +49,7 @@ public class Driller {
     public Driller(Bank bank) {
         this.bank = bank;
         this.models = bank.getInstance().getArmorStandModel().getModels().get(ModelType.DRILLER);
+        this.damage = bank.getConfig().getDrillerDamage();
         Collections.sort(models, (a, b) ->
                 a.getVector().getY() < b.getVector().getY() ? -1 : a.getVector().getY() == b.getVector().getY() ? 0 : 1);
     }
@@ -45,7 +63,7 @@ public class Driller {
         for(int k = 0; k < 100; k++) {
             l.add(dir);
             points.add(new Location(l.getWorld(),l.getX(), l.getY(),l.getZ()));
-            if(bank.getVaultDoor().isVaultDoorBlock(l.getBlock()))
+            if(bank.getVaultDoor().isDoorBlock(l.getBlock()))
                 break;
         }
         this.laserTask = new BukkitRunnable() {
@@ -94,7 +112,7 @@ public class Driller {
                 }
 
                 if(time % (2 * 20) == 0) {
-                    bank.getVaultDoor().breach();
+                    bank.getVaultDoor().damage(damage);
                     location.getWorld().playSound(location, Sound.BLOCK_BEACON_AMBIENT, 1f, 0F);
                 }
 
@@ -173,4 +191,7 @@ public class Driller {
         armorStands.clear();
     }
 
+    public static ItemStack getDrillerItem() {
+        return drillerItem;
+    }
 }

@@ -4,9 +4,10 @@ import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import fr.cocoraid.prodigybank.bank.Bank;
-import fr.cocoraid.prodigybank.bank.Driller;
 import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.bank.listeners.*;
+import fr.cocoraid.prodigybank.bank.tools.C4;
+import fr.cocoraid.prodigybank.bank.tools.Driller;
 import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import fr.cocoraid.prodigybank.commands.MainCMD;
 import fr.cocoraid.prodigybank.commands.ProdigyBankSetupCMD;
@@ -15,14 +16,12 @@ import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.filemanager.language.LanguageLoader;
 import fr.cocoraid.prodigybank.filemanager.model.ArmorStandModel;
-import fr.cocoraid.prodigybank.filemanager.model.ModelType;
 import fr.cocoraid.prodigybank.setupbank.ChestPlaceListener;
 import fr.cocoraid.prodigybank.setupbank.RobberToolPlaceEvent;
 import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;
 import fr.cocoraid.prodigybank.utils.CC;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
@@ -79,10 +78,10 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         }
 
         instance = this;
-        loadCustomRecipes();
 
         this.configLoader = new ConfigLoader(this);
         loadLanguage(c);
+        loadCustomRecipes();
         setupBankProcess = new SetupBankProcess(this);
         loadCommands();
         registerEvents();
@@ -128,6 +127,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().registerEvents(new CheckBankListener(this),this);
             Bukkit.getPluginManager().registerEvents(new DetectStaffRemoveListener(this),this);
             Bukkit.getPluginManager().registerEvents(new OpenSafeDepositListener(this),this);
+            Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
             Bukkit.getPluginManager().registerEvents(new RobbersDieListener(this),this);
         }
     }
@@ -162,16 +162,9 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     }
 
 
-    private ItemStack drillerItem = new ItemStack(Material.GRINDSTONE);
-    {
-        ItemMeta meta = drillerItem.getItemMeta();
-        meta.setDisplayName("§7Vault Driller");
-        meta.setLore(Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cStay near to build the driller"));
-        drillerItem.setItemMeta(meta);
-    }
     private void loadCustomRecipes() {
         NamespacedKey drillerKey = new NamespacedKey(this, "driller");
-        ShapedRecipe drillerRecipe = new ShapedRecipe(drillerKey, drillerItem);
+        ShapedRecipe drillerRecipe = new ShapedRecipe(drillerKey, Driller.getDrillerItem());
         drillerRecipe.shape(
                 "BTB"
                 , "CAC"
@@ -184,23 +177,17 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         drillerRecipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
         Bukkit.addRecipe(drillerRecipe);
 
-        NamespacedKey c4Key = new NamespacedKey(this, "driller");
-        ShapedRecipe c4Recipe = new ShapedRecipe(c4Key, drillerItem);
-        drillerRecipe.shape(
-                "BTB"
-                , "CAC"
-                , "SGS");
-        drillerRecipe.setIngredient('B', Material.BLAZE_ROD);
-        drillerRecipe.setIngredient('C', Material.END_CRYSTAL);
-        drillerRecipe.setIngredient('T', Material.REDSTONE_TORCH);
-        drillerRecipe.setIngredient('G', Material.GRINDSTONE);
-        drillerRecipe.setIngredient('A', Material.BEACON);
-        drillerRecipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
-        Bukkit.addRecipe(drillerRecipe);
-    }
-
-    public ItemStack getDrillerItem() {
-        return drillerItem;
+        NamespacedKey c4Key = new NamespacedKey(this, "c4");
+        ShapedRecipe c4Recipe = new ShapedRecipe(c4Key, C4.getItem());
+        c4Recipe.shape(
+                "TRT"
+                , "MGM"
+                , "TRT");
+        c4Recipe.setIngredient('T', Material.TNT);
+        c4Recipe.setIngredient('M', Material.HONEY_BLOCK);
+        c4Recipe.setIngredient('R', Material.REDSTONE_BLOCK);
+        c4Recipe.setIngredient('G', Material.BLAZE_POWDER);
+        Bukkit.addRecipe(c4Recipe);
     }
 
     public static ProdigyBank getInstance() {

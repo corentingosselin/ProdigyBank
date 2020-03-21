@@ -1,13 +1,22 @@
 package fr.cocoraid.prodigybank.utils;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
@@ -99,4 +108,17 @@ public class Utils {
         return (byte) ((int) (f * 256.0F / 360.0F));
     }
 
+
+    public static ItemStack createSkull(String displayName, List<String> lores, String url) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayName);
+        meta.setLore(lores);
+        item.setItemMeta(meta);
+
+        UUID hashAsId = new UUID(url.hashCode(), url.hashCode());
+        return Bukkit.getUnsafe().modifyItemStack(item,
+                "{SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + url + "\"}]}}}"
+        );
+    }
 }

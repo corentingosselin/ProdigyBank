@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Subcommand;
 import fr.cocoraid.prodigybank.ProdigyBank;
-import fr.cocoraid.prodigybank.bank.SafeDeposit;
+import fr.cocoraid.prodigybank.bank.protection.SafeDeposit;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;

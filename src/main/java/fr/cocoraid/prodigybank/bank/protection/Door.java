@@ -1,4 +1,4 @@
-package fr.cocoraid.prodigybank.bank;
+package fr.cocoraid.prodigybank.bank.protection;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
@@ -14,33 +14,37 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-public class VaultDoor {
+public abstract class Door {
 
-    private ConfigLoader config = ProdigyBank.getInstance().getConfigLoader();
+    protected static ConfigLoader config = ProdigyBank.getInstance().getConfigLoader();
+    protected List<Block> blocks;
+    protected Cuboid cuboid;
+    protected int maxHealth;
+    protected int health;
+    protected boolean destroyed;
 
-    private Cuboid cuboid;
-    private List<BlockState> saved_blocks = new ArrayList<>();
-    private List<Block> blocks;
-    private int health = 100;
-    private boolean destroyed;
-
-    public VaultDoor(Cuboid cuboid) {
+    public Door(Cuboid cuboid, int health) {
+        this.health = health;
+        this.maxHealth = health;
         this.cuboid = cuboid;
         this.blocks = cuboid.getBlockList();
-        blocks.removeIf(b -> b.getType() == Material.AIR);
-        blocks.forEach(b -> {
-            saved_blocks.add(b.getState());
-        });
     }
 
+    public void close() {
+
+    }
+
+
     private int break_state = 0;
-    public void breach() {
+    public void damage(int damage) {
         Location l = cuboid.getPoint1();
-        this.health -= 5;
+        this.health -= damage;
         if(health <= 0) {
-            blocks.forEach(b -> {
+            blocks.stream().filter(b -> b.getType() != Material.AIR).forEach(b -> {
                 l.getWorld().spawnParticle(Particle.EXPLOSION_HUGE,b.getLocation(),1,0.5,0.5,0.5,0.1F);
                 b.setType(Material.AIR);
             });
@@ -50,7 +54,7 @@ public class VaultDoor {
             try {
                 if (health % (health / 9) == 0) {
                     break_state++;
-                    blocks.stream().filter(b -> Utils.getRandom(0, 5) >= 4).forEach(b -> {
+                    blocks.stream().filter(b -> b.getType() != Material.AIR && Utils.getRandom(0, 5) >= 4).forEach(b -> {
                         BlockPosition bp = new BlockPosition(b.getX(), b.getY(), b.getZ());
                         PacketPlayOutBlockBreakAnimation anim = new PacketPlayOutBlockBreakAnimation(new Random().nextInt(2000), bp, break_state);
                         NMSPlayer.sendPacketNearby(b.getLocation(), anim);
@@ -64,9 +68,8 @@ public class VaultDoor {
             }
 
         }
-
-
     }
+
 
     public int getHealth() {
         return health;
@@ -77,15 +80,11 @@ public class VaultDoor {
     }
 
     public void reset() {
-        saved_blocks.forEach(l -> {
-            l.getBlock().setType(l.getType());
-            l.getBlock().setBlockData(l.getBlockData());
-        });
-        this.health = 100;
+        this.health = maxHealth;
         destroyed = false;
     }
 
-    public boolean isVaultDoorBlock(Block b) {
+    public boolean isDoorBlock(Block b) {
         return blocks.contains(b);
     }
 

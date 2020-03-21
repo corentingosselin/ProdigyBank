@@ -3,6 +3,8 @@ package fr.cocoraid.prodigybank.filemanager.language;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class Language {
 
@@ -54,6 +56,13 @@ public class Language {
     public String step_missing = "§cYou can't setup this because a previous step is missing: §6%step";
     public String step_already_done = "§cThe command you are trying to enter has been already initialized !";
     public String staff_removed = "&cStaff member removed from the bank";
+
+    public String tool_driller_displayname = "§7Vaultdoor Driller";
+    public List<String> tool_driller_lores = Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cStay near to build the driller");
+
+    public String tool_c4_displayname = "§cC4";
+    public List<String> tool_c4_lores = Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cYou have 4 seconds to run away from explosion");
+
 
     public String deposit_hostess_name = "§bDeposit";
     public String withdraw_hostess_name = "§bWithdraw";
