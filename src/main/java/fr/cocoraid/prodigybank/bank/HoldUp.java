@@ -351,9 +351,9 @@ public class HoldUp {
         if(time % 20 == 0)
             Bukkit.getOnlinePlayers().stream().filter(cur -> ((Player) cur).getWorld().equals(bank.getWorld())).forEach(cur -> {
                 if(playersInside.contains(cur))
-                    cur.playSound(cur.getLocation(), Sound.ENTITY_WANDERING_TRADER_REAPPEARED, 1, 2);
+                    cur.playSound(cur.getLocation(), Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 2);
                 else
-                    cur.playSound(bank.getBankCuboid().getCenter(), Sound.ENTITY_WANDERING_TRADER_REAPPEARED, 1, 2);
+                    cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 2);
             });
 
 
@@ -477,7 +477,7 @@ public class HoldUp {
     }
 
     public boolean isC4Sticked(Block block) {
-        return getC4s().stream().filter(c4 -> c4.getStickedBlock().equals(block)).findAny().isPresent();
+        return getC4s().stream().filter(c4 -> c4.getStickedBlock() != null && c4.getStickedBlock().equals(block)).findAny().isPresent();
     }
 
     public List<Item> getDroppedKeys() {

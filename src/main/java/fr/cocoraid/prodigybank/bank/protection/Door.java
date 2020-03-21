@@ -50,6 +50,7 @@ public abstract class Door {
             });
             l.getWorld().playSound(l, Sound.ENTITY_GENERIC_EXPLODE,1,1);
             l.getWorld().playSound(l, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR,2F,0);
+            destroyed = true;
         } else {
             try {
                 if (health % (health / 9) == 0) {
@@ -61,7 +62,6 @@ public abstract class Door {
                     });
                     l.getWorld().playSound(l, Sound.BLOCK_ANVIL_LAND, 0.5F, 0);
                     l.getWorld().playSound(l, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 1);
-                    destroyed = true;
                 }
             } catch (ArithmeticException e) {
 

@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.org.apache.commons.codec.binary.Base64;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -109,16 +110,28 @@ public class Utils {
     }
 
 
-    public static ItemStack createSkull(String displayName, List<String> lores, String url) {
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(displayName);
-        meta.setLore(lores);
-        item.setItemMeta(meta);
 
-        UUID hashAsId = new UUID(url.hashCode(), url.hashCode());
-        return Bukkit.getUnsafe().modifyItemStack(item,
-                "{SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + url + "\"}]}}}"
-        );
+    public static ItemStack createSkull(String displayName, List<String> lores,String url){
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        if(url.isEmpty())
+            return head;
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        byte[] encodedData = Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}",url).getBytes());
+        profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
+        Field profileField = null;
+        try{
+            profileField = headMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(headMeta, profile);
+        }catch(NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1){
+            e1.printStackTrace();
+        }
+
+        head.setItemMeta(headMeta);
+        return head;
     }
+
+
+
 }

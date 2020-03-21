@@ -27,7 +27,7 @@ public class PlaceC4Listener implements Listener {
                 e.setCancelled(true);
                 if (bank.getHoldUp().isHoldup()) {
                     if (bank.getHoldUp().getSquad().isFromSquad(p)) {
-                        bank.getDoors_to_lock().stream().filter(d -> d.isDoorBlock(e.getClickedBlock()) && bank.getHoldUp().isC4Sticked(e.getClickedBlock())).findAny().ifPresent(d -> {
+                        bank.getDoors_to_lock().stream().filter(d -> d.isDoorBlock(e.getClickedBlock()) && !bank.getHoldUp().isC4Sticked(e.getClickedBlock())).findAny().ifPresent(d -> {
                             C4 c4 = new C4(d);
                             c4.place(e.getClickedBlock());
                             bank.getHoldUp().getC4s().add(c4);

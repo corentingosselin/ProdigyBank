@@ -35,7 +35,7 @@ public class C4 {
         c4.setVisible(false);
         c4.spawnArmorStand();
         l.getWorld().playSound(l, Sound.ITEM_ARMOR_EQUIP_TURTLE,2,0);
-        l.getWorld().playSound(l, Sound.BLOCK_CONDUIT_DEACTIVATE,2,2);
+        l.getWorld().playSound(l, Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE,2,2);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -53,6 +53,7 @@ public class C4 {
         door.damage(config.getC4Damage());
         c4.remove();
         door.getCuboid().getCenter().getWorld().playSound(door.getCuboid().getCenter(), Sound.ENTITY_GENERIC_EXPLODE,2,1);
+        stickedBlock = null;
     }
 
     public void reset() {
