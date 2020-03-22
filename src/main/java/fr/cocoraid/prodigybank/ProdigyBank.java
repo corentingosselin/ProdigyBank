@@ -113,7 +113,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         if(citizensLoaded) return;
         loadBank();
         this.citizensLoaded = true;
-        checkForInvalidsCitizens();
+        //checkForInvalidsCitizens();
     }
 
     public void loadBank() {

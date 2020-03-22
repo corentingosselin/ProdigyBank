@@ -96,10 +96,7 @@ public class PoliceStaff extends Staff  {
         npc.getNavigator().getLocalParameters().baseSpeed(1.26F);
         sentinel.squad = "police";
         sentinel.respawnTime = 0;
-        sentinel.health = 50;
         npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
-
-        sentinel.attackRate = 0;
         sentinel.range = 100;
         sentinel.chaseRange = 100;
         npc.getNavigator().getDefaultParameters().range((float) 100);

@@ -43,7 +43,6 @@ public class SquadCMD extends BaseCommand {
     }
 
     @CommandPermission("prodigybank.squad.help")
-    @Default
     @Subcommand("squad")
     public void help(Player player, String[] args) {
         if (args.length == 0) {
