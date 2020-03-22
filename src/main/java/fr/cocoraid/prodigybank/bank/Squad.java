@@ -156,9 +156,11 @@ public class Squad {
     public void addMoney(int amount) {
         moneyCollected+=amount;
         ProdigyBank instance = ProdigyBank.getInstance();
+        sendSubTitle(new StringBuilder(lang.money_collected).toString().replace("%amount",String.valueOf(moneyCollected)));
+        owner.playSound(owner.getLocation(),instance.getConfigLoader().getSoundMoneyCollect(),1F,1F);
         squad.forEach(s -> {
             s.playSound(s.getLocation(),instance.getConfigLoader().getSoundMoneyCollect(),1F,1F);
-        } );
+        });
 
     }
 

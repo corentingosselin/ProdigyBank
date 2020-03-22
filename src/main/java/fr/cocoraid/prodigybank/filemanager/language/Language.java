@@ -1,5 +1,6 @@
 package fr.cocoraid.prodigybank.filemanager.language;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class Language {
 
     //admin message
     public String no_permission = "§cYou do not have the permission to do that";
+    public String holdup_running = "§cYou can't do that during holdup";
     public String bank_remove_first = "§cYou are trying to setup a new bank while a current already existing, please remove it first with §6/pb delete bank";
     public String bank_already_created = "§cA bank has been already created !";
     public String setup_in_progress = "§cAdministrator is currently setting up the bank, you can force cancelling this process by using §6/pb setup forcecancel";
@@ -57,8 +59,49 @@ public class Language {
     public String step_already_done = "§cThe command you are trying to enter has been already initialized !";
     public String staff_removed = "&cStaff member removed from the bank";
 
+
+    //squad cmd
+    public List<String> squad_help = Arrays.asList("§3Create your squad: §b/pb squad create",
+            "§3Create your squad: §b/pb squad create",
+            "§3Invite your friend: §b/pb squad invite <player>",
+            "§3Remove your member: §b/pb squad remove <player>",
+            "§3Disband your squad: §b/pb squad disband",
+            "§3Accept squad invitation: §b/pb squad accept",
+            "§3list your members: §b/pb squad list");
+    public String squad_already_member_or = "§cYou already have a squad or you already are member of squad";
+    public String squad_just_created = "§bYou just created your squad, you can now add player to your squad with /pb squad add <player>";
+    public String squad_any = "§cYou do not have any squad...";
+    public String squad_disband = "§bYour squad is now disbanded !";
+
+    public String squad_list_leader = "§bLeader: %player";
+    public String squad_list = "§bThis is the list of squad members:";
+    public String squad_list_key = "- §a%player";
+
+    public String squad_no_invit = "§cNo invitation received or invitation expired...";
+    public String squad_already_member = "§cYou already are member of this squad";
+    public String squad_cant_accept = "§cYou can't accept this invitation as you already are member of a squad...";
+
+    public String squad_now_member = "§cYou are now member of the squad directed by %player";
+    public String squad_has_joined = "§bThe player §3%player §bhas joined your squad ! ";
+    public String squad_invite_yourself = "§cYou can't invite yourself !";
+    public String squad_not_leader = "§cYou can't invite member if you are not the leader of your squad !";
+    public String squad_invitation_already_sent = "§cInvitation already sent !";
+    public String squad_player_already_member = "§cThe player is already member of this squad";
+    public String squad_player_already_member_of = "§cThe player is already member of a squad";
+    public String squad_invit_sent = "§bInvitation sent ! the player has 1 minute to reply";
+    public String squad_join_request = "§bWould you like to join §3%player §bsquad ? §3/pb squad accept";
+    public String squad_expired_invit = "§cInvitation for §4%player §cexpired !";
+    public String squad_not_member = "§cThis player is not a member of your squad";
+    public String squad_remove = "§bPlayer §3%player §b has been removed from your squad";
+
+
+    public String title_driller_build = ":§cYou are too far from the driller to build it";
     public String tool_driller_displayname = "§7Vaultdoor Driller";
     public List<String> tool_driller_lores = Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cStay near to build the driller");
+    public String driller_already = "§cAnother driller is already installed !";
+    public String driller_too_close = "§cYou are too close from the vault door";
+    public String driller_too_far = "§cYou are too far from the vault door to place the driller";
+    public String driller_building = "§6Building started ! please stay near from the driller to build it...";
 
     public String tool_c4_displayname = "§cC4";
     public List<String> tool_c4_lores = Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cYou have 4 seconds to run away from explosion");
@@ -69,14 +112,13 @@ public class Language {
     public String banker_name = "§4Banker";
 
     public String title_holdup_starting = "§4Hold up : §7Tell me where is the banker right now !";
-    public String title_holdup_help = "§3Info : §cFind the vault §f> §aStart Driller §f> §2Collect keys from the banker";
 
     public String title_swatting = " : §3The swat team is coming now...";
     public String title_doors_closed = "§4Locked up ! : §cYou must use a bomb to escape...";
 
-    public String title_time_left_notify_doors = "§cEscape ! : §7%time minutes to escape before jail !";
+    public String title_time_left_notify_doors = "§cEscape ! : §7%time before the bank !";
     public String title_time_left_notify_swat = "§3You now have  : §b%time minutes before swat team coming";
-    public String title_time_left_notify_escape = "§cEscape ! : §7%time minutes to escape before jail !";
+    public String title_time_left_notify_escape = ": §7%time minutes to escape before bank closing !";
 
     //ACTION BAR TIMER
     public String time_left_type = "§cTIME LEFT: §4%time §cBEFORE %type ";
@@ -84,7 +126,7 @@ public class Language {
     public String time_doors_type = "§7DOORS";
     public String time_jail_type = "§4JAIL";
 
-    public String time_over = "§cTIME OVER ! You are sent to jail...";
+    public String time_over = ":§cTIME OVER ! You are sent to jail...";
 
     public String title_left_warning = "§cWarning : §7The bank has not been robbed";
     public String title_bank_left = "§cBank left : §7While the bank has not been robbed";
@@ -98,14 +140,16 @@ public class Language {
     public String title_owner_died = "§4Leader Died ! : §cYou are now jailed....";
     public String title_owner_self_died = "§4You Died ! : §cYour squad has been jailed...";
     public String title_member_self_died = "§4You Died ! : §cYou were excluded from the squad";
-    public String title_member_notify_died = " : §c%player has been killed by %staff";
+    public String title_member_notify_died = " : §c%player has been killed";
 
     public String title_area_restricted = "§4Area restricted ! : §cRobbery in progress, SWAT is coming...";
     public String title_hostage_notify = "§4Hold UP ! : §cYou are now hostage (pvp enabled)";
 
+    public String title_vaultdoor_exploded = ": §cVault door has been exploded !";
+    public String title_robbery_notify_server = ": §cRobbery has started inside the bank !";
 
     public String chest_key_name = "§6Safe Deposit Key";
-    public String money_collected = "§2+%amount$";
+    public String money_collected = "§2+%amount $";
     public String no_more_key = "§cI do not have key anymore...";
 
 

@@ -68,12 +68,16 @@ money-collected-sound: ITEM_ARMOR_EQUIP_CHAIN
 
 # Time in seconds
 time-limit-before-doors: 60
-time-limit-before-swatting: 120
+time-limit-before-swatting: 60
 time-limit-before-jail: 60
 
+# Maximum of 6 players inside a squad
+squad-amount-limit: 6
+
+
 # These parameters are essentially used to change the speed of doors breaking
-bank-door-health: 50
-vault-door-health: 100
+bank-door-health: 200
+vault-door-health: 200
 driller-damage: 5
 c4-damage: 5
 c4-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNlZTY5NGI1ZGYzNGY0MGQ1ZTc3NGJkMzA0NmRiODQ5ZTM0ZmY1NWE0ODJkMDczMWU5ZDdhN2JiNzRhMTIifX19"

@@ -137,14 +137,13 @@ public class ConfigLoader {
         return config.getInt("max-chest-money",1000);
     }
 
+    Random r = new Random();
     public SkinData getRandomPoliceSkin() {
-        Random r = new Random();
         List<SkinData> list =  skins.get(SkinType.POLICE);
         return list.get(r.nextInt(list.size()));
     }
 
     public SkinData getRandomSwatSkin() {
-        Random r = new Random();
         List<SkinData> list =  skins.get(SkinType.SWAT);
         return list.get(r.nextInt(list.size()));
     }

@@ -101,6 +101,7 @@ public class HoldUp {
 
     public void timeOver() {
         squad.getOwner().playSound(squad.getOwner().getLocation(), Sound.BLOCK_END_GATEWAY_SPAWN, 2, 0);
+        squad.sendSubTitle(lang.time_over);
         //jail other member
         squad.getSquadMembers().forEach(s -> squad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
         //notify owner
@@ -208,13 +209,6 @@ public class HoldUp {
         loadRobberySteps();
         updateTiming();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(isHoldup)
-                    squad.sendSubTitle(lang.title_holdup_help);
-            }
-        }.runTaskLater(instance,20*5);
 
 
         //send start messages
@@ -237,12 +231,16 @@ public class HoldUp {
         Bukkit.getOnlinePlayers().stream().filter(cur -> ((Player) cur).getWorld().equals(bank.getWorld())).forEach(cur -> {
 
             //add hostages
-            if(bank.getBankCuboid().isIn(cur) && !squad.getSquadMembers().contains(cur) && !squad.getOwner().equals(cur)) {
+            if(bank.getBankCuboid().isIn(cur) && !squad.isFromSquad(cur)) {
                 //send msg
                 Utils.sendTitle(cur,lang.title_hostage_notify);
                 getHostages().add(cur);
+            } else {
+                if(!squad.isFromSquad(cur)) {
+                    Utils.sendTitle(cur, lang.title_robbery_notify_server);
+                }
             }
-            cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_CONDUIT_ACTIVATE,2,0);
+            cur.playSound(bank.getBankCuboid().getCenter(), Sound.ENTITY_RAVAGER_ROAR,2,0);
         });
 
         startTask();
@@ -259,7 +257,9 @@ public class HoldUp {
 
             @Override
             public void run() {
-
+                if(!isHoldup) {
+                    return;
+                }
                 if(phases.isEmpty()) return;
 
                 int minutes = time / (60 * 20);
@@ -341,19 +341,17 @@ public class HoldUp {
                     cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_NOTE_BLOCK_BELL, 2, 0);
             });
         }
-
-
     }
 
 
     private void updateDoors() {
         //ring different alarm
-        if(time % 20 == 0)
+        if(time % 2 == 0)
             Bukkit.getOnlinePlayers().stream().filter(cur -> ((Player) cur).getWorld().equals(bank.getWorld())).forEach(cur -> {
                 if(playersInside.contains(cur))
-                    cur.playSound(cur.getLocation(), Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 2);
+                    cur.playSound(cur.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3F, 0);
                 else
-                    cur.playSound(bank.getBankCuboid().getCenter(), Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 2);
+                    cur.playSound(bank.getBankCuboid().getCenter(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2, 0);
             });
 
 
@@ -420,7 +418,7 @@ public class HoldUp {
         this.squad = null;
 
         if(getDriller() != null)
-            getDriller().destory();
+            getDriller().destroy();
 
 
         getC4s().forEach(c4 -> {
