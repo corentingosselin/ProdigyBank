@@ -14,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CheckBankListener implements Listener {
@@ -32,6 +34,16 @@ public class CheckBankListener implements Listener {
         if(e.getBlock().getType() == Material.ENDER_CHEST) {
             if(!bank.getChests().stream().filter(c -> c.getChest().equals(e.getBlock())).findAny().isPresent()) return;
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void teleport(PlayerTeleportEvent e) {
+        if(!bank.getHoldUp().isHoldup()) return;
+        for (RegisteredListener registeredListener : e.getHandlers().getRegisteredListeners()) {
+            if(!registeredListener.getPlugin().equals(instance)) {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -63,12 +75,12 @@ public class CheckBankListener implements Listener {
         if(!e.getBank().equals(bank)) return;
         HoldUp holdup = e.getBank().getHoldUp();
         if(holdup.getHostages().contains(e.getPlayer())) {
-            //hostage escape
+            holdup.getHostages().remove(e.getPlayer());
             return;
         }
         boolean robbed = bank.getVaultDoor().isDestroyed() && bank.getChests().stream().filter(c -> c.isChestOpened()).findAny().isPresent();
         //check if the leader is leaving the bank
-         if(holdup.getSquad().getOwner().equals(e.getPlayer())) {
+        if(holdup.getSquad().getOwner().equals(e.getPlayer())) {
             //check for vault destroyed and 1 chest opened at least
             if(robbed) {
                 holdup.succed();

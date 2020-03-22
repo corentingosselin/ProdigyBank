@@ -112,7 +112,7 @@ public class Driller {
                 }
 
                 if(time % (2 * 20) == 0) {
-                    bank.getVaultDoor().damage(damage);
+                    bank.getVaultDoor().damage(bank.getHoldUp(),damage);
                     location.getWorld().playSound(location, Sound.BLOCK_BEACON_AMBIENT, 1f, 0F);
                 }
 
@@ -143,8 +143,9 @@ public class Driller {
             Location targeter = null;
             @Override
             public void run() {
+                if(ready) return;
                 if(builder.getLocation().distanceSquared(location)  < 6 * 6) {
-                    Utils.sendTitle(builder,":§cYou are too far from the driller to build it");
+                    Utils.sendTitle(builder, lang.title_driller_build);
                 } else return;
 
                 Model m = queue.removeFirst();
@@ -176,7 +177,7 @@ public class Driller {
 
     }
 
-    public void destory() {
+    public void destroy() {
         this.ready = false;
         if(task != null && !task.isCancelled())
             task.cancel();

@@ -13,6 +13,7 @@ import net.citizensnpcs.trait.LookClose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -78,20 +79,29 @@ public class PoliceStaff extends Staff  {
         npc.getTrait(LookClose.class).setRealisticLooking(true);
         npc.getTrait(LookClose.class).toggle();
         npc.addTrait(SentinelTrait.class);
+
+        ItemStack weapon;
+        if(Math.random() >= 0.2) {
+            weapon = new ItemStack(Material.DIAMOND_SWORD, 1);
+            weapon.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+        } else {
+            weapon = new ItemStack(Material.BOW, 1);
+        }
         npc.getTrait(Equipment.class)
-                .set(Equipment.EquipmentSlot.HAND, new ItemStack(Material.DIAMOND_SWORD, 1));
+                .set(Equipment.EquipmentSlot.HAND, weapon);
 
         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
         sentinel.fightback = true;
         sentinel.realistic = false;
 
-        sentinel.speed = 1.2F;
-        npc.getNavigator().getLocalParameters().baseSpeed(1.2F);
+        sentinel.speed = 1.22F;
+        npc.getNavigator().getLocalParameters().baseSpeed(1.22F);
         sentinel.squad = "police";
         sentinel.respawnTime = 0;
+        sentinel.health = 30;
         npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
 
-        sentinel.attackRate = 4;
+        sentinel.attackRate = 5;
         sentinel.range = 100;
         sentinel.chaseRange = 100;
         npc.getNavigator().getDefaultParameters().range((float) 100);

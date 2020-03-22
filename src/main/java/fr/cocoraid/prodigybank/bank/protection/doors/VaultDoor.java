@@ -1,8 +1,8 @@
 package fr.cocoraid.prodigybank.bank.protection.doors;
 
+import fr.cocoraid.prodigybank.bank.HoldUp;
 import fr.cocoraid.prodigybank.bank.protection.Door;
 import fr.cocoraid.prodigybank.setupbank.Cuboid;
-import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 
 import java.util.ArrayList;
@@ -19,6 +19,12 @@ public class VaultDoor extends Door {
     }
 
     @Override
+    public void explode(HoldUp h) {
+        super.explode(h);
+        h.getSquad().sendSubTitle(lang.title_vaultdoor_exploded);
+    }
+
+    @Override
     public void close() {
         super.close();
         saved_blocks.forEach(l -> {
@@ -27,11 +33,4 @@ public class VaultDoor extends Door {
         });
     }
 
-    @Override
-    public void reset() {
-        super.reset();
-        blocks.stream().filter(b -> b.getType() == config.getBankDoorMaterial()).forEach(b -> {
-            b.setType(Material.AIR);
-        });
-    }
 }

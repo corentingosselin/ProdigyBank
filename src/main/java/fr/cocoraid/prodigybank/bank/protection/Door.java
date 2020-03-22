@@ -1,7 +1,9 @@
 package fr.cocoraid.prodigybank.bank.protection;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bank.HoldUp;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
+import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.nms.NMSPlayer;
 import fr.cocoraid.prodigybank.setupbank.Cuboid;
 import fr.cocoraid.prodigybank.utils.Utils;
@@ -12,15 +14,14 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public abstract class Door {
 
     protected static ConfigLoader config = ProdigyBank.getInstance().getConfigLoader();
+    protected static Language lang = ProdigyBank.getInstance().getLanguage();
     protected List<Block> blocks;
     protected Cuboid cuboid;
     protected int maxHealth;
@@ -40,17 +41,11 @@ public abstract class Door {
 
 
     private int break_state = 0;
-    public void damage(int damage) {
+    public void damage(HoldUp holdUp, int damage) {
         Location l = cuboid.getPoint1();
         this.health -= damage;
         if(health <= 0) {
-            blocks.stream().filter(b -> b.getType() != Material.AIR).forEach(b -> {
-                l.getWorld().spawnParticle(Particle.EXPLOSION_HUGE,b.getLocation(),1,0.5,0.5,0.5,0.1F);
-                b.setType(Material.AIR);
-            });
-            l.getWorld().playSound(l, Sound.ENTITY_GENERIC_EXPLODE,1,1);
-            l.getWorld().playSound(l, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR,2F,0);
-            destroyed = true;
+           explode(holdUp);
         } else {
             try {
                 if (health % (health / 9) == 0) {
@@ -68,6 +63,17 @@ public abstract class Door {
             }
 
         }
+    }
+
+    public void explode(HoldUp h) {
+        Location l = cuboid.getPoint1();
+        blocks.stream().filter(b -> b.getType() != Material.AIR).forEach(b -> {
+            l.getWorld().spawnParticle(Particle.EXPLOSION_HUGE,b.getLocation(),1,0.5,0.5,0.5,0.1F);
+            b.setType(Material.AIR);
+        });
+        l.getWorld().playSound(l, Sound.ENTITY_GENERIC_EXPLODE,1,1);
+        l.getWorld().playSound(l, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR,2F,0);
+        destroyed = true;
     }
 
 

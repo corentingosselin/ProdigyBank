@@ -11,6 +11,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -51,8 +52,17 @@ public class SwatTeam extends Staff {
             for (int k = 0; k < config.getSwatPerPoint(); k++) {
                 NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
                 npc.addTrait(SentinelTrait.class);
+
+                ItemStack weapon;
+                if(Math.random() >= 0.1) {
+                    weapon = new ItemStack(Material.DIAMOND_SWORD, 1);
+                    weapon.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+                } else {
+                    weapon = new ItemStack(Material.BOW, 1);
+                }
                 npc.getTrait(Equipment.class)
-                        .set(Equipment.EquipmentSlot.HAND,  new ItemStack(Material.DIAMOND_SWORD));
+                        .set(Equipment.EquipmentSlot.HAND, weapon);
+
                 ItemStack shield = new ItemStack(Material.SHIELD);
                 ItemMeta shieldMeta = shield.getItemMeta();
                 BlockStateMeta bmeta = (BlockStateMeta) shieldMeta;
@@ -70,8 +80,8 @@ public class SwatTeam extends Staff {
                 sentinel.fightback = true;
                 sentinel.chaseRange = 100;
                 sentinel.range = 100;
-                sentinel.health = 30;
-                sentinel.attackRate = 5;
+                sentinel.health = 40;
+                sentinel.attackRate = 6;
                 sentinel.speed = 1.25F;
                 npc.getNavigator().getLocalParameters().baseSpeed(1.25F);
                 sentinel.squad = "swat";
