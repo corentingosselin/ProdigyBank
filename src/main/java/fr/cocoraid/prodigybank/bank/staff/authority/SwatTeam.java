@@ -33,7 +33,6 @@ public class SwatTeam extends Staff {
     private List<NPC> swats = new ArrayList<>();
 
 
-    private Bank bank;
     public SwatTeam(Bank bank) {
         super(bank);
     }
@@ -80,18 +79,21 @@ public class SwatTeam extends Staff {
                 sentinel.fightback = true;
                 sentinel.chaseRange = 100;
                 sentinel.range = 100;
-                sentinel.health = 40;
-                sentinel.attackRate = 5;
-                sentinel.speed = 1.25F;
-                npc.getNavigator().getLocalParameters().baseSpeed(1.25F);
+                sentinel.reach = 3.3;
+                sentinel.avoidRange = 0;
+                sentinel.closeChase = true;
+
+                sentinel.health = 100;
+                sentinel.attackRate = 0;
+                sentinel.speed = 1.28F;
+                npc.getNavigator().getLocalParameters().baseSpeed(1.28F);
                 sentinel.squad = "swat";
                 sentinel.respawnTime = -1;
                 npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
                 npc.data().setPersistent(NPC.PATHFINDER_OPEN_DOORS_METADATA, true);
-
                 npc.spawn(s);
                 SkinData data = config.getRandomSwatSkin();
-                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),data.getSignature(),data.getTexture());
+                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(data.getUuid(),data.getSignature(),data.getTexture());
                 new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(sentinel.allTargets);
                 holdup.getSquad().getSquadMembers().forEach(cur -> {
                     new SentinelTargetLabel("uuid:" + cur.getUniqueId()).addToList(sentinel.allTargets);

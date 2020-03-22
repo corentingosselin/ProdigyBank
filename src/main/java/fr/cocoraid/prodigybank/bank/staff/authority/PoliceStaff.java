@@ -92,16 +92,14 @@ public class PoliceStaff extends Staff  {
 
         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
         sentinel.fightback = true;
-        sentinel.realistic = false;
-
-        sentinel.speed = 1.22F;
-        npc.getNavigator().getLocalParameters().baseSpeed(1.22F);
+        sentinel.speed = 1.26F;
+        npc.getNavigator().getLocalParameters().baseSpeed(1.26F);
         sentinel.squad = "police";
         sentinel.respawnTime = 0;
-        sentinel.health = 30;
+        sentinel.health = 50;
         npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
 
-        sentinel.attackRate = 5;
+        sentinel.attackRate = 0;
         sentinel.range = 100;
         sentinel.chaseRange = 100;
         npc.getNavigator().getDefaultParameters().range((float) 100);
@@ -109,7 +107,7 @@ public class PoliceStaff extends Staff  {
         npc.data().setPersistent("nameplate-visible", false);
         npc.spawn(location);
         SkinData data = config.getRandomPoliceSkin();
-        ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),data.getSignature(),data.getTexture());
+        ((SkinnableEntity) npc.getEntity()).setSkinPersistent(data.getUuid(),data.getSignature(),data.getTexture());
         police.add(npc);
         player.sendMessage(
                 new StringBuilder(lang.object_added).toString()
