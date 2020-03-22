@@ -54,10 +54,10 @@ public class SwatTeam extends Staff {
                 npc.addTrait(SentinelTrait.class);
 
                 ItemStack weapon;
-                if(Math.random() >= 0.1) {
+               if(Math.random() >= 0.1) {
                     weapon = new ItemStack(Material.DIAMOND_SWORD, 1);
                     weapon.addEnchantment(Enchantment.DAMAGE_ALL, 3);
-                } else {
+               } else {
                     weapon = new ItemStack(Material.BOW, 1);
                 }
                 npc.getTrait(Equipment.class)
@@ -81,7 +81,7 @@ public class SwatTeam extends Staff {
                 sentinel.chaseRange = 100;
                 sentinel.range = 100;
                 sentinel.health = 40;
-                sentinel.attackRate = 6;
+                sentinel.attackRate = 5;
                 sentinel.speed = 1.25F;
                 npc.getNavigator().getLocalParameters().baseSpeed(1.25F);
                 sentinel.squad = "swat";
