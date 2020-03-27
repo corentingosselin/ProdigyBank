@@ -11,6 +11,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class SwatTeam extends Staff {
@@ -51,29 +53,44 @@ public class SwatTeam extends Staff {
             for (int k = 0; k < config.getSwatPerPoint(); k++) {
                 NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
                 npc.addTrait(SentinelTrait.class);
-                npc.getTrait(Equipment.class)
-                        .set(Equipment.EquipmentSlot.HAND,  new ItemStack(Material.DIAMOND_SWORD));
-                ItemStack shield = new ItemStack(Material.SHIELD);
-                ItemMeta shieldMeta = shield.getItemMeta();
-                BlockStateMeta bmeta = (BlockStateMeta) shieldMeta;
-                Banner banner = (Banner) bmeta.getBlockState();
-                banner.setBaseColor(DyeColor.BLACK);
-                banner.update();
-                bmeta.setBlockState(banner);
-                shield.setItemMeta(bmeta);
-                npc.getTrait(Equipment.class)
-                        .set(Equipment.EquipmentSlot.OFF_HAND, shield);
+
+                double r = new Random().nextDouble();
+                if(r >= 0.2) {
+                    ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
+                    sword.addEnchantment(Enchantment.DAMAGE_ALL,2);
+                    npc.getTrait(Equipment.class)
+                            .set(Equipment.EquipmentSlot.HAND, sword);
+                    ItemStack shield = new ItemStack(Material.SHIELD);
+                    ItemMeta shieldMeta = shield.getItemMeta();
+                    BlockStateMeta bmeta = (BlockStateMeta) shieldMeta;
+                    Banner banner = (Banner) bmeta.getBlockState();
+                    banner.setBaseColor(DyeColor.BLACK);
+                    banner.update();
+                    bmeta.setBlockState(banner);
+                    shield.setItemMeta(bmeta);
+                    npc.getTrait(Equipment.class)
+                            .set(Equipment.EquipmentSlot.OFF_HAND, shield);
+                } else {
+                    npc.getTrait(Equipment.class)
+                            .set(Equipment.EquipmentSlot.HAND, new ItemStack(Material.BOW));
+                }
+
 
                 npc.getNavigator().getDefaultParameters().range((float) 100);
                 SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
                 npc.data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, false);
+
                 sentinel.fightback = true;
                 sentinel.chaseRange = 100;
+                //purchasing
+                sentinel.closeChase = true;
+                sentinel.avoidRange = 1;
+
                 sentinel.range = 100;
-                sentinel.health = 30;
-                sentinel.attackRate = 5;
-                sentinel.speed = 1.25F;
-                npc.getNavigator().getLocalParameters().baseSpeed(1.25F);
+                sentinel.setHealth(60);
+                sentinel.attackRate = 0;
+                sentinel.speed = 1.28F;
+                npc.getNavigator().getLocalParameters().baseSpeed(1.28F);
                 sentinel.squad = "swat";
                 sentinel.respawnTime = -1;
                 npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
@@ -81,7 +98,7 @@ public class SwatTeam extends Staff {
 
                 npc.spawn(s);
                 SkinData data = config.getRandomSwatSkin();
-                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),data.getSignature(),data.getTexture());
+                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(data.getUuid(),data.getSignature(),data.getTexture());
                 new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).addToList(sentinel.allTargets);
                 holdup.getSquad().getSquadMembers().forEach(cur -> {
                     new SentinelTargetLabel("uuid:" + cur.getUniqueId()).addToList(sentinel.allTargets);

@@ -2,6 +2,7 @@ package fr.cocoraid.prodigybank.bank.listeners;
 
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
+import fr.cocoraid.prodigybank.bank.Squad;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
@@ -32,20 +33,44 @@ public class DetectHoldUpListener implements Listener {
             e.setCancelled(true);
             return;
         }
+        if(!bank.isStaffMember(e.getNPC())) {
+            return;
+        }
+        if(bank.getHoldUp().isHoldup()) {
+            return;
+        }
+
+        //if player does not have any squad, we create an empty one
+        //if player has squad without member
+        Squad squad = instance.getSquad(p);
+        if(!instance.getSquads().containsKey(p.getUniqueId()) && squad == null)
+            instance.createSquad(p);
+        else {
+            //we check if the member who interact is the leader
+            if(squad != null && !squad.getOwner().equals(p)) {
+                p.sendMessage("§cYou can't start holdup because you are not the leader");
+                return;
+            }
+        }
+        //we use that squad and we check if all member are inside the bank, if not teleport missing player inside the bank to the leader
+        bank.getHoldUp().startHoldup(instance.getSquads().get(p.getUniqueId()));
+        bank.getHoldUp().getSquad().getSquadMembers().stream().filter(cur -> !bank.getBankCuboid().isIn(cur)).forEach(cur -> {
+            cur.teleport(bank.getHoldUp().getSquad().getOwner());
+        });
 
     }
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent e) {
-        if(bank.getHoldUp().isHoldup()) {
-            if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-                Player damager = (Player) e.getDamager();
-                Player victim = (Player) e.getEntity();
-                if(bank.getBankCuboid().isIn(damager) && bank.getBankCuboid().isIn(victim)) {
+
+        if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+            Player damager = (Player) e.getDamager();
+            Player victim = (Player) e.getEntity();
+            if(bank.getHoldUp().isHoldup()) {
+                if (bank.getBankCuboid().isIn(damager) && bank.getBankCuboid().isIn(victim)) {
                     e.setCancelled(false);
                 }
-
             }
 
 
@@ -71,12 +96,11 @@ public class DetectHoldUpListener implements Listener {
         if(e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
             if(bank.isStaffMember(e.getNPC())) {
-                if(!bank.getHoldUp().isHoldup()) {
-                    if(!instance.getSquads().containsKey(p.getUniqueId()))
-                        instance.createSquad(p);
+                if(bank.getHoldUp().isHoldup()) {
+                    if(!bank.getHoldUp().getSquad().isFromSquad(p)) {
+                        e.setCancelled(true);
+                    }
 
-                    bank.getHoldUp().startHoldup(instance.getSquads().get(p.getUniqueId()));
-                } else {
                     if(bank.getBankerStaff().getBanker().equals(e.getNPC())) {
                         if(!bank.getHoldUp().getVirtualKeys().isEmpty()) {
                             int randomNum = ThreadLocalRandom.current().nextInt(0, 100);
@@ -92,11 +116,13 @@ public class DetectHoldUpListener implements Listener {
                             p.playSound(p.getLocation(),Sound.ENTITY_VILLAGER_NO,1,2);
                         }
                     }
+                    if(bank.isNonViolentStaffMember(e.getNPC())) {
+                        e.setDamage(0);
+                    }
+                } else {
+                    e.setCancelled(true);
+                }
 
-                }
-                if(bank.isNonViolentStaffMember(e.getNPC())) {
-                    e.setDamage(0);
-                }
             }
         }
     }

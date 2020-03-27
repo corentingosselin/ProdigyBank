@@ -11,13 +11,15 @@ import fr.cocoraid.prodigybank.bank.tools.Driller;
 import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import fr.cocoraid.prodigybank.commands.MainCMD;
 import fr.cocoraid.prodigybank.commands.ProdigyBankSetupCMD;
+import fr.cocoraid.prodigybank.commands.SquadCMD;
 import fr.cocoraid.prodigybank.filemanager.BankLoader;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.filemanager.language.LanguageLoader;
 import fr.cocoraid.prodigybank.filemanager.model.ArmorStandModel;
+import fr.cocoraid.prodigybank.listener.PlaceC4Listener;
 import fr.cocoraid.prodigybank.setupbank.ChestPlaceListener;
-import fr.cocoraid.prodigybank.setupbank.RobberToolPlaceEvent;
+import fr.cocoraid.prodigybank.listener.RobberToolPlaceEvent;
 import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;
 import fr.cocoraid.prodigybank.utils.CC;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
@@ -45,6 +47,15 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
     public Map<UUID, Squad> getSquads() {
         return squads;
+    }
+    public Squad getSquad(Player player) {
+        if(instance.getSquads().containsKey(player.getUniqueId())) {
+            return instance.getSquads().get(player.getUniqueId());
+        } else if(instance.getSquads().values().stream().filter(s -> s.getSquadMembers().contains(player)).findAny().isPresent()) {
+            return instance.getSquads().values().stream().filter(s -> s.getSquadMembers().contains(player)).findAny().get();
+        }
+        return null;
+
     }
 
     private static ProdigyBank instance;
@@ -127,7 +138,6 @@ public class ProdigyBank extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().registerEvents(new CheckBankListener(this),this);
             Bukkit.getPluginManager().registerEvents(new DetectStaffRemoveListener(this),this);
             Bukkit.getPluginManager().registerEvents(new OpenSafeDepositListener(this),this);
-            Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
             Bukkit.getPluginManager().registerEvents(new RobbersDieListener(this),this);
         }
     }
@@ -135,12 +145,14 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     private void registerEvents() {
         Bukkit.getPluginManager().registerEvents(new ChestPlaceListener(this),this);
         Bukkit.getPluginManager().registerEvents(new RobberToolPlaceEvent(this),this);
+        Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
         Bukkit.getPluginManager().registerEvents(this,this);
     }
 
     private void loadCommands() {
         this.manager = new PaperCommandManager(this);
         manager.registerCommand(new MainCMD(this));
+        manager.registerCommand(new SquadCMD(this));
         manager.registerCommand(new ProdigyBankSetupCMD(this));
         manager.getCommandConditions().addCondition("bank", (context) -> {
             BukkitCommandIssuer issuer = context.getIssuer();
@@ -189,6 +201,8 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         c4Recipe.setIngredient('G', Material.BLAZE_POWDER);
         Bukkit.addRecipe(c4Recipe);
     }
+
+
 
     public static ProdigyBank getInstance() {
         return instance;

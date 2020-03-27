@@ -3,6 +3,8 @@ package fr.cocoraid.prodigybank.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import fr.cocoraid.prodigybank.ProdigyBank;
+import fr.cocoraid.prodigybank.bank.tools.C4;
+import fr.cocoraid.prodigybank.bank.tools.Driller;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
@@ -45,5 +47,15 @@ public class MainCMD extends BaseCommand {
     public void onTest(Player player) {
         Bukkit.broadcastMessage("build ");
         //instance.getArmorStandModel().getDriller().build(player.getLocation());
+    }
+
+    @Subcommand("give driller")
+    public void giveDriller(Player player) {
+        player.getInventory().addItem(Driller.getDrillerItem());
+    }
+
+    @Subcommand("give c4")
+    public void giveC4(Player player) {
+        player.getInventory().addItem(C4.getItem());
     }
 }

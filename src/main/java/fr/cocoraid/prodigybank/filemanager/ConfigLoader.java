@@ -41,14 +41,16 @@ public class ConfigLoader {
         for (String id : config.getConfigurationSection("police-skin").getKeys(false)) {
             String texture = config.getString("police-skin." + id + ".texture");
             String signature = config.getString("police-skin." + id + ".signature");
-            skins.get(SkinType.POLICE).add(new SkinData(texture,signature));
+            String uuid = config.getString("police-skin." + id + ".uuid");
+            skins.get(SkinType.POLICE).add(new SkinData(uuid,texture,signature));
         }
 
         skins.putIfAbsent(SkinType.SWAT,new ArrayList<>());
         for (String id : config.getConfigurationSection("swat-skin").getKeys(false)) {
             String texture = config.getString("swat-skin." + id + ".texture");
             String signature = config.getString("swat-skin." + id + ".signature");
-            skins.get(SkinType.SWAT).add(new SkinData(texture,signature));
+            String uuid = config.getString("swat-skin." + id + ".uuid");
+            skins.get(SkinType.SWAT).add(new SkinData(uuid,texture,signature));
         }
 
     }
@@ -71,11 +73,11 @@ public class ConfigLoader {
 
 
     public SkinData getHostessSkin() {
-        SkinData data = new SkinData(config.getString("hostess-skin.texture"),config.getString("hostess-skin.signature"));
+        SkinData data = new SkinData(config.getString("hostess-skin.uuid"),config.getString("hostess-skin.texture"),config.getString("hostess-skin.signature"));
         return data;
     }
     public SkinData getBankerSkin() {
-        SkinData data = new SkinData(config.getString("banker-skin.texture"),config.getString("banker-skin.signature"));
+        SkinData data = new SkinData(config.getString("banker-skin.uuid"),config.getString("banker-skin.texture"),config.getString("banker-skin.signature"));
         return data;
     }
 
@@ -102,7 +104,6 @@ public class ConfigLoader {
     public String getC4Texture() {
         return config.getString("c4-texture","eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNlZTY5NGI1ZGYzNGY0MGQ1ZTc3NGJkMzA0NmRiODQ5ZTM0ZmY1NWE0ODJkMDczMWU5ZDdhN2JiNzRhMTIifX19");
     }
-
 
     public Material getBankDoorMaterial() {
         return Material.valueOf(config.getString("bank-door-material","IRON_BARS"));

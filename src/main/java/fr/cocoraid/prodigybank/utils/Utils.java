@@ -111,25 +111,27 @@ public class Utils {
 
 
 
-    public static ItemStack createSkull(String displayName, List<String> lores,String url){
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        if(url.isEmpty())
-            return head;
-        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-        byte[] encodedData = Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}",url).getBytes());
-        profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
-        Field profileField = null;
-        try{
-            profileField = headMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(headMeta, profile);
-        }catch(NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1){
-            e1.printStackTrace();
-        }
+    public static boolean isSmilar(ItemStack itemA, ItemStack itemB) {
+        return itemA.hasItemMeta() && itemB.hasItemMeta() && itemA.getItemMeta().equals(itemB.getItemMeta());
+    }
 
-        head.setItemMeta(headMeta);
-        return head;
+    public static ItemStack createSkull(String displayname, List<String> lores, String url) {
+        ItemStack item = skullTextured(url);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayname);
+        meta.setLore(lores);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack skullTextured( String base64) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        UUID hashAsId = new UUID(base64.hashCode(), base64.hashCode());
+        ItemStack newItem = Bukkit.getUnsafe().modifyItemStack(item,
+                "{SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}"
+        );
+        newItem.setItemMeta(item.getItemMeta());
+        return newItem;
     }
 
 

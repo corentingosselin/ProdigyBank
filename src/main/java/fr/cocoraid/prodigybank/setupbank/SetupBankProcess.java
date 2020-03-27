@@ -229,9 +229,10 @@ public class SetupBankProcess {
             @Override
             public void run() {
                 SkinData skinData = config.getHostessSkin();
-                if(savedStep == BankProcessStep.BANKER)
-                    skinData = config.getBankerSkin();
-                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(UUID.randomUUID().toString(),skinData.getSignature(),skinData.getTexture());
+                if(savedStep == BankProcessStep.BANKER) {
+                   skinData = config.getBankerSkin();
+                }
+                ((SkinnableEntity) npc.getEntity()).setSkinPersistent(skinData.getUuid(),skinData.getSignature(),skinData.getTexture());
             }
         }.runTaskLater(instance,20 * 10);
 
