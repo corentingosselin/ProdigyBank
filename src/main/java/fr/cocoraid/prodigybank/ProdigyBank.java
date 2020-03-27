@@ -22,6 +22,7 @@ import fr.cocoraid.prodigybank.setupbank.ChestPlaceListener;
 import fr.cocoraid.prodigybank.listener.RobberToolPlaceEvent;
 import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;
 import fr.cocoraid.prodigybank.utils.CC;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,6 +33,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcmonkey.sentinel.SentinelTrait;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,15 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     private Map<UUID, Squad> squads = new HashMap<>();
     public void createSquad(Player owner) {
         squads.put(owner.getUniqueId(),new Squad(owner));
+    }
+    public Squad getSquad(Player player) {
+        if(instance.getSquads().containsKey(player.getUniqueId())) {
+            return instance.getSquads().get(player.getUniqueId());
+        } else if(instance.getSquads().values().stream().filter(s -> s.getSquadMembers().contains(player)).findAny().isPresent()) {
+            return instance.getSquads().values().stream().filter(s -> s.getSquadMembers().contains(player)).findAny().get();
+        }
+        return null;
+
     }
 
     public Map<UUID, Squad> getSquads() {
@@ -111,6 +122,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         if(citizensLoaded) return;
         loadBank();
         this.citizensLoaded = true;
+        //checkForInvalidsCitizens();
     }
 
     public void loadBank() {
@@ -132,6 +144,23 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         }
     }
 
+
+    //reset vaultdoor, and bankdoors
+    public void checkForInvalidSession() {
+
+    }
+
+
+    public void checkForInvalidsCitizens() {
+        CitizensAPI.getNPCRegistry().iterator().forEachRemaining(npc -> {
+            SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+            if(sentinel.squad == "swat") {
+                npc.destroy();
+            }
+        });
+
+    }
+
     public void registerBankEvents() {
         if(bank != null) {
             Bukkit.getPluginManager().registerEvents(new DetectHoldUpListener(this),this);
@@ -143,6 +172,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     }
 
     private void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
         Bukkit.getPluginManager().registerEvents(new ChestPlaceListener(this),this);
         Bukkit.getPluginManager().registerEvents(new RobberToolPlaceEvent(this),this);
         Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
@@ -154,6 +184,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         manager.registerCommand(new MainCMD(this));
         manager.registerCommand(new SquadCMD(this));
         manager.registerCommand(new ProdigyBankSetupCMD(this));
+        manager.registerCommand(new SquadCMD(this));
         manager.getCommandConditions().addCondition("bank", (context) -> {
             BukkitCommandIssuer issuer = context.getIssuer();
             if (issuer.isPlayer()) {
