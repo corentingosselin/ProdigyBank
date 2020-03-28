@@ -57,7 +57,8 @@ public class SwatTeam extends Staff {
                 double r = new Random().nextDouble();
                 if(r >= 0.2) {
                     ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
-                    sword.addEnchantment(Enchantment.DAMAGE_ALL,2);
+                    if(r >= 0.5)
+                        sword.addEnchantment(Enchantment.DAMAGE_ALL,5);
                     npc.getTrait(Equipment.class)
                             .set(Equipment.EquipmentSlot.HAND, sword);
                     ItemStack shield = new ItemStack(Material.SHIELD);
@@ -71,8 +72,12 @@ public class SwatTeam extends Staff {
                     npc.getTrait(Equipment.class)
                             .set(Equipment.EquipmentSlot.OFF_HAND, shield);
                 } else {
+                    ItemStack item = new ItemStack(Material.BOW);
+                    item.addEnchantment(Enchantment.ARROW_FIRE,1);
+                    if(r >= 0.7)
+                        item.addEnchantment(Enchantment.ARROW_KNOCKBACK,3);
                     npc.getTrait(Equipment.class)
-                            .set(Equipment.EquipmentSlot.HAND, new ItemStack(Material.BOW));
+                            .set(Equipment.EquipmentSlot.HAND, item);
                 }
 
 
@@ -87,10 +92,10 @@ public class SwatTeam extends Staff {
                 sentinel.avoidRange = 1;
 
                 sentinel.range = 100;
-                sentinel.setHealth(60);
+                sentinel.setHealth(80);
                 sentinel.attackRate = 0;
-                sentinel.speed = 1.28F;
-                npc.getNavigator().getLocalParameters().baseSpeed(1.28F);
+                sentinel.speed = 1.31F;
+                npc.getNavigator().getLocalParameters().baseSpeed(1.31F);
                 sentinel.squad = "swat";
                 sentinel.respawnTime = -1;
                 npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
@@ -124,7 +129,7 @@ public class SwatTeam extends Staff {
         if(!entity.hasMetadata("NPC")) return false;
         SentinelTrait sentinel = SentinelUtilities.tryGetSentinel(entity);
         if (sentinel != null) {
-           return swats.stream().filter(npc -> npc.equals(sentinel.getNPC())).findAny().isPresent();
+            return swats.stream().filter(npc -> npc.equals(sentinel.getNPC())).findAny().isPresent();
         }
         return false;
 

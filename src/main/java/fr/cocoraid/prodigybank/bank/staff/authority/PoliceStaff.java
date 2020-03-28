@@ -13,6 +13,7 @@ import net.citizensnpcs.trait.LookClose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class PoliceStaff extends Staff  {
@@ -78,19 +80,30 @@ public class PoliceStaff extends Staff  {
         npc.getTrait(LookClose.class).setRealisticLooking(true);
         npc.getTrait(LookClose.class).toggle();
         npc.addTrait(SentinelTrait.class);
-        npc.getTrait(Equipment.class)
-                .set(Equipment.EquipmentSlot.HAND, new ItemStack(Material.DIAMOND_SWORD, 1));
+
+
+        Random r = new Random();
+        if(r.nextDouble() >= 0.2) {
+            ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
+            item.addEnchantment(Enchantment.DAMAGE_ALL,4);
+            npc.getTrait(Equipment.class)
+                    .set(Equipment.EquipmentSlot.HAND, item);
+        } else {
+            ItemStack item = new ItemStack(Material.BOW, 1);
+            item.addEnchantment(Enchantment.ARROW_DAMAGE,4);
+            npc.getTrait(Equipment.class)
+                    .set(Equipment.EquipmentSlot.HAND, item);
+        }
 
         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
         sentinel.fightback = true;
         sentinel.realistic = false;
-
-        sentinel.speed = 1.27F;
-        npc.getNavigator().getLocalParameters().baseSpeed(1.27F);
+        sentinel.speed = 1.3F;
+        npc.getNavigator().getLocalParameters().baseSpeed(1.3F);
         sentinel.squad = "police";
         sentinel.respawnTime = 0;
         npc.data().setPersistent(NPC.RESPAWN_DELAY_METADATA, -1);
-        sentinel.setHealth(40);
+        sentinel.setHealth(60);
         sentinel.attackRate = 0;
         sentinel.range = 100;
         sentinel.chaseRange = 100;

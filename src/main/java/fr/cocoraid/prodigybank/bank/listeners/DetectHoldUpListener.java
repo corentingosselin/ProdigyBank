@@ -7,6 +7,7 @@ import fr.cocoraid.prodigybank.filemanager.language.Language;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Arrow;
@@ -144,6 +145,8 @@ public class DetectHoldUpListener implements Listener {
                     if(bank.isNonViolentStaffMember(e.getNPC())) {
                         e.setDamage(0);
                     }
+                }else {
+                    e.setCancelled(true);
                 }
             }
         }

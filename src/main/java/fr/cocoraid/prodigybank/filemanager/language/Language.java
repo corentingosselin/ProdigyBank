@@ -104,6 +104,8 @@ public class Language {
     public String driller_building = "§6Building started ! please stay near from the driller to build it...";
     public String driller_destroyed = "§4Driller destroyed ! : §cBuilder has died, please place another !";
 
+    public String tp_not_allowed = "§cTeleport not allowed during the holdup !";
+
     public String tool_c4_displayname = "§cC4";
     public List<String> tool_c4_lores = Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cYou have 4 seconds to run away from explosion");
 
@@ -111,6 +113,9 @@ public class Language {
     public String deposit_hostess_name = "§bDeposit";
     public String withdraw_hostess_name = "§bWithdraw";
     public String banker_name = "§4Banker";
+
+    public String title_hero = "§6Hero  : §bYou saved the bank from holdup";
+    public String hero_reward = "6bYou earned §2%amount because you saved the bank !";
 
     public String title_leader_quit = "§4Leader quit ! : §cHe has 20 seconds to join back server";
     public String title_holdup_starting = "§4Hold up : §7Tell me where is the banker right now !";

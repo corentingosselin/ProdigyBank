@@ -3,8 +3,10 @@ package fr.cocoraid.prodigybank.bank.listeners;
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.Squad;
+import fr.cocoraid.prodigybank.bridge.EconomyBridge;
 import fr.cocoraid.prodigybank.filemanager.ConfigLoader;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
+import fr.cocoraid.prodigybank.utils.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -32,6 +34,7 @@ public class RobbersDieListener implements Listener {
             e.setDeathMessage("");
             bank.getHoldUp().failOwnerDied(e.getEntity());
         } else if(squad.getSquadMembers().contains(e.getEntity())) {
+            e.setDeathMessage("");
             squad.removeSquadMember(e.getEntity(), Squad.MemberFailedType.DIED);
             squad.sendSubTitle(e.getEntity(),lang.title_member_self_died);
             String msg = new StringBuilder(lang.title_member_notify_died).toString().replace("%player",e.getEntity().getName());
@@ -39,6 +42,12 @@ public class RobbersDieListener implements Listener {
             squad.getSquadMembers().stream().filter(cur -> !cur.equals(e.getEntity())).forEach(cur -> {
                 squad.sendSubTitle(cur,msg);
             });
+        } else if(bank.getHoldUp().getHostages().contains(e.getEntity())) {
+            //hero
+            EconomyBridge.giveMoney(e.getEntity().getKiller(),5000);
+            e.getEntity().getKiller().sendMessage(new StringBuilder(lang.hero_reward).toString().replace("%amount","5000"));
+            Utils.sendTitle(e.getEntity().getPlayer(),lang.title_hero);
+
         }
     }
 

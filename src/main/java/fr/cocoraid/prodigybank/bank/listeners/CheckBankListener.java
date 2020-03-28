@@ -6,11 +6,13 @@ import fr.cocoraid.prodigybank.bank.HoldUp;
 import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.customevents.EnterBankEvent;
 import fr.cocoraid.prodigybank.customevents.QuitBankEvent;
+import fr.cocoraid.prodigybank.filemanager.language.Language;
 import fr.cocoraid.prodigybank.utils.Utils;
 import net.citizensnpcs.api.event.NPCDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -22,9 +24,11 @@ public class CheckBankListener implements Listener {
 
     private ProdigyBank instance;
     private Bank bank;
+    private Language lang;
     public CheckBankListener(ProdigyBank instance) {
         this.bank = instance.getBank();
         this.instance = instance;
+        this.lang = instance.getLanguage();
     }
 
 
@@ -37,14 +41,16 @@ public class CheckBankListener implements Listener {
         }
     }
 
-    @EventHandler
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void teleport(PlayerTeleportEvent e) {
         if(e.getPlayer().hasMetadata("NPC")) return;
         if(!bank.getHoldUp().isHoldup()) return;
-        for (RegisteredListener registeredListener : e.getHandlers().getRegisteredListeners()) {
-            if(!registeredListener.getPlugin().equals(instance)) {
-                e.setCancelled(true);
-            }
+        if(bank.getHoldUp().getSquad().getSquadMembers().contains(e.getPlayer())
+                || bank.getHoldUp().getSquad().getOwner().equals(e.getPlayer())
+                || bank.getHoldUp().getHostages().contains(e.getPlayer())) {
+            e.getPlayer().sendMessage(lang.tp_not_allowed);
+            e.setCancelled(true);
         }
     }
 
