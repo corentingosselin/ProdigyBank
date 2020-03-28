@@ -59,16 +59,6 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     public Map<UUID, Squad> getSquads() {
         return squads;
     }
-    public Squad getSquad(Player player) {
-        if(instance.getSquads().containsKey(player.getUniqueId())) {
-            return instance.getSquads().get(player.getUniqueId());
-        } else if(instance.getSquads().values().stream().filter(s -> s.getSquadMembers().contains(player)).findAny().isPresent()) {
-            return instance.getSquads().values().stream().filter(s -> s.getSquadMembers().contains(player)).findAny().get();
-        }
-        return null;
-
-    }
-
     private static ProdigyBank instance;
 
     private ArmorStandModel armorStandModel;

@@ -144,34 +144,43 @@ public class Driller {
             @Override
             public void run() {
                 if(ready) return;
-                if(builder.getLocation().distanceSquared(location)  < 6 * 6) {
-                    Utils.sendTitle(builder, lang.title_driller_build);
-                } else return;
 
-                Model m = queue.removeFirst();
-                Vector v = UtilMath.rotateAroundAxisY(m.getVector().clone(), Math.toRadians(-location.getYaw() - 90));
-                Location l = spawn.clone().add(v);
-                ReflectedArmorStand as = new ReflectedArmorStand(l);
-                as.setVisible(false);
-                as.setHeadPose(m.getAngle());
-                as.setSmall(m.isSmall());
-                as.setEquipment(5,m.getItem());
-                as.spawnArmorStand();
-                as.setRotation(location.getYaw() + 90,0);
-                as.updateMetadata();
-                armorStands.add(as);
-                location.getWorld().playSound(location, Sound.ENTITY_ITEM_FRAME_ADD_ITEM,0.3F,0F);
-                if(m.getItem().getType()== Material.REDSTONE_TORCH) {
-                    targeter = l;
-                    targeter.setDirection(location.getDirection());
-                    targeter.setPitch(0);
-                }
-                if(queue.isEmpty()) {
-                    location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND,1,1);
-                    initTarget(targeter);
-                    this.cancel();
-                }
+                if(bank.getHoldUp().getSquad().getSquadMembers().contains(builder) || bank.getHoldUp().getSquad().getOwner().equals(builder)) {
 
+                    if (builder.getLocation().distanceSquared(location) < 6 * 6) {
+                        Utils.sendTitle(builder, lang.title_driller_build);
+                    } else return;
+
+                    Model m = queue.removeFirst();
+                    Vector v = UtilMath.rotateAroundAxisY(m.getVector().clone(), Math.toRadians(-location.getYaw() - 90));
+                    Location l = spawn.clone().add(v);
+                    ReflectedArmorStand as = new ReflectedArmorStand(l);
+                    as.setVisible(false);
+                    as.setHeadPose(m.getAngle());
+                    as.setSmall(m.isSmall());
+                    as.setEquipment(5, m.getItem());
+                    as.spawnArmorStand();
+                    as.setRotation(location.getYaw() + 90, 0);
+                    as.updateMetadata();
+                    armorStands.add(as);
+                    location.getWorld().playSound(location, Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.3F, 0F);
+                    if (m.getItem().getType() == Material.REDSTONE_TORCH) {
+                        targeter = l;
+                        targeter.setDirection(location.getDirection());
+                        targeter.setPitch(0);
+                    }
+                    if (queue.isEmpty()) {
+                        location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND, 1, 1);
+                        initTarget(targeter);
+                        this.cancel();
+                    }
+
+                } else {
+                    //notify driller has been destroyed because the builder has died
+                    destroy();
+                    bank.getHoldUp().getSquad().sendSubTitle(lang.driller_destroyed);
+                    bank.getHoldUp().setDriller(null);
+                }
             }
         }.runTaskTimerAsynchronously(bank.getInstance(),0,3);
 

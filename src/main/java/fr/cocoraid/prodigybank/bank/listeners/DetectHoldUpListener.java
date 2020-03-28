@@ -3,17 +3,23 @@ package fr.cocoraid.prodigybank.bank.listeners;
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.Squad;
+import fr.cocoraid.prodigybank.filemanager.language.Language;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -21,9 +27,11 @@ public class DetectHoldUpListener implements Listener {
 
     private ProdigyBank instance;
     private Bank bank;
+    private Language lang;
     public DetectHoldUpListener(ProdigyBank instance) {
         this.bank = instance.getBank();
         this.instance = instance;
+        this.lang = instance.getLanguage();
     }
 
     @EventHandler
@@ -57,23 +65,26 @@ public class DetectHoldUpListener implements Listener {
         bank.getHoldUp().getSquad().getSquadMembers().stream().filter(cur -> !bank.getBankCuboid().isIn(cur)).forEach(cur -> {
             cur.teleport(bank.getHoldUp().getSquad().getOwner());
         });
-
     }
 
 
+    //Allow or prevent damage is holdup or not
+    //IS TRIGGERED the LAST
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent e) {
-
-        if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-            Player damager = (Player) e.getDamager();
-            Player victim = (Player) e.getEntity();
-            if(bank.getHoldUp().isHoldup()) {
-                if (bank.getBankCuboid().isIn(damager) && bank.getBankCuboid().isIn(victim)) {
-                    e.setCancelled(false);
+        if(bank.getBankCuboid().isIn(e.getEntity().getLocation()) || bank.getBankCuboid().isIn(e.getDamager().getLocation())) {
+        if(bank.getHoldUp().isHoldup()) {
+            if(bank.getHoldUp().getSquad().getOwner().equals(e.getEntity())) {
+                Player owner = (Player) e.getEntity();
+                if(owner.getHealth() <= (owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue() / 3)) {
+                    owner.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,20*7,2,false));
+                    bank.getHoldUp().getSquad().sendTeamSubTitle(lang.title_leader_low_health);
                 }
             }
-
-
+            e.setCancelled(false);
+        } else {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -90,7 +101,21 @@ public class DetectHoldUpListener implements Listener {
         }
     }
 
-    //todo make other player not squad, can't damage staff
+    @EventHandler
+    public void dropKey(EntityDropItemEvent e) {
+        if(e.getEntity() instanceof Player) {
+            if(bank.getHoldUp().isHoldup()) {
+                if(bank.getHoldUp().getSquad().isFromSquad((Player)e.getEntity())) {
+                    //is key
+                    if(bank.getHoldUp().getKeys().contains(e.getItemDrop().getItemStack())) {
+                        bank.getHoldUp().getDroppedKeys().add(e.getItemDrop());
+                    }
+                }
+            }
+        }
+    }
+
+
     @EventHandler
     public void detectDamage(NPCDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player) {
@@ -119,10 +144,7 @@ public class DetectHoldUpListener implements Listener {
                     if(bank.isNonViolentStaffMember(e.getNPC())) {
                         e.setDamage(0);
                     }
-                } else {
-                    e.setCancelled(true);
                 }
-
             }
         }
     }

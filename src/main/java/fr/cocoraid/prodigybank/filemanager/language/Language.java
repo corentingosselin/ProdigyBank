@@ -102,6 +102,7 @@ public class Language {
     public String driller_too_close = "§cYou are too close from the vault door";
     public String driller_too_far = "§cYou are too far from the vault door to place the driller";
     public String driller_building = "§6Building started ! please stay near from the driller to build it...";
+    public String driller_destroyed = "§4Driller destroyed ! : §cBuilder has died, please place another !";
 
     public String tool_c4_displayname = "§cC4";
     public List<String> tool_c4_lores = Arrays.asList("- §cMust be placed inside a bank during holdup", "- §cCan be placed only once", "- §cYou have 4 seconds to run away from explosion");
@@ -115,6 +116,7 @@ public class Language {
 
     public String title_swatting = " : §3The swat team is coming now...";
     public String title_doors_closed = "§4Locked up ! : §cYou must use a bomb to escape...";
+    public String title_leader_low_health = ": §cLeader in danger ! Save him now.";
 
     public String title_time_left_notify_doors = "§cEscape ! : §7%time before the bank !";
     public String title_time_left_notify_swat = "§3You now have  : §b%time minutes before swat team coming";
