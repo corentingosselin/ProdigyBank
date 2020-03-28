@@ -47,6 +47,7 @@ public class RobbersDieListener implements Listener {
         if(bank.getHoldUp().isHoldup()) {
             if(bank.getHoldUp().getSquad().getOwner().equals(e.getPlayer())) {
                 //notify squad
+                bank.getHoldUp().getSquad().sendTeamSubTitle(lang.title_leader_quit);
                 new BukkitRunnable() {
                     @Override
                     public void run() {

@@ -112,6 +112,7 @@ public class Language {
     public String withdraw_hostess_name = "§bWithdraw";
     public String banker_name = "§4Banker";
 
+    public String title_leader_quit = "§4Leader quit ! : §cHe has 20 seconds to join back server";
     public String title_holdup_starting = "§4Hold up : §7Tell me where is the banker right now !";
 
     public String title_swatting = " : §3The swat team is coming now...";
