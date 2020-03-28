@@ -93,6 +93,7 @@ public class Squad {
 
     public void removeSquadMember(Player player, MemberFailedType type) {
         int lost = failSquadMember(player,type.percent);
+        getSquadMembers().remove(player);
         new BukkitRunnable() {
             @Override
             public void run() {

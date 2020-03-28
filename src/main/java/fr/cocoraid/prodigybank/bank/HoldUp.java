@@ -258,10 +258,9 @@ public class HoldUp {
             @Override
             public void run() {
                 if(!isHoldup) {
+                    this.cancel();
                     return;
                 }
-                if(phases.isEmpty()) return;
-
                 int minutes = time / (60 * 20);
                 int seconds = (time / 20) % 60;
                 int tick = (time % 20) * 3;
@@ -375,6 +374,9 @@ public class HoldUp {
 
     public void endHoldUp() {
         if(!isHoldup()) return;
+        if(holdUpTask != null && !holdUpTask.isCancelled())
+            holdUpTask.cancel();
+
         if(squad != null) {
             bank.getPoliceStaff().resetSquadTargets();
             bank.getBankerStaff().resetSquadTargets();
@@ -387,9 +389,6 @@ public class HoldUp {
         bank.getBankerStaff().refreshStaff();
         bank.getHostessStaff().refreshStaff();
 
-
-        if(holdUpTask != null && !holdUpTask.isCancelled())
-            holdUpTask.cancel();
 
         bank.getChests().forEach(c -> c.cancel());
 
