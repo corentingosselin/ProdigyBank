@@ -150,6 +150,7 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
     }
 
+    //if crash
 
     public void checkForInvalidsCitizens() {
         CitizensAPI.getNPCRegistry().iterator().forEachRemaining(npc -> {
