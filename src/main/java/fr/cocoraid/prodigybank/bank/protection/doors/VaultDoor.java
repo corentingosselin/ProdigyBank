@@ -12,7 +12,7 @@ public class VaultDoor extends Door {
 
     protected List<BlockState> saved_blocks = new ArrayList<>();
     public VaultDoor(Cuboid cuboid) {
-        super(cuboid,config.getBankDoorHealth());
+        super(cuboid,config.getVaultDoorHealth());
         blocks.forEach(b -> {
             saved_blocks.add(b.getState());
         });

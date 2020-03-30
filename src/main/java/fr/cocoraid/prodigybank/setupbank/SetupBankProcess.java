@@ -220,6 +220,7 @@ public class SetupBankProcess {
         npc.data().setPersistent("nameplate-visible", true);
         npc.addTrait(SentinelTrait.class);
         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
+        sentinel.fightback = false;
         sentinel.speed = 1.25F;
         npc.getNavigator().getLocalParameters().baseSpeed(1.25F);
         npc.spawn(l);
@@ -239,7 +240,6 @@ public class SetupBankProcess {
 
         if(currentStep == BankProcessStep.BANKER) {
             banker = npc;
-            sentinel.fightback = false;
             currentStep = BankProcessStep.DEPOSIT_HOSTESS;
             admin.sendMessage(lang.next_deposit_setup);
 

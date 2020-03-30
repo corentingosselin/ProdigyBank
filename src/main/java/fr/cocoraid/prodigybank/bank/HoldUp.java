@@ -60,53 +60,61 @@ public class HoldUp {
 
     //call this when leader has reached the exit
     public void succed() {
+        Squad tempSquad = squad;
         squad.reward();
         squad.sendOwnerSubTitle(lang.title_bank_owner_success);
         squad.sendTeamSubTitle(lang.title_bank_member_success);
         endHoldUp();
+        //teleport everyone to the banker
+
+
+        tempSquad.getSquadMembers().forEach(s -> s.teleport(tempSquad.getOwner()));
     }
 
     //when the leader died
     public void failOwnerDied(Player owner) {
-
+        Squad tempSquad = squad;
+        endHoldUp();
         //notify other member
-        squad.sendTeamSubTitle(lang.title_owner_died);
+        tempSquad.sendTeamSubTitle(lang.title_owner_died);
         //jail other member
-        squad.getSquadMembers().forEach(s -> squad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
+        tempSquad.getSquadMembers().forEach(s -> tempSquad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
 
 
         //notify owner
-        squad.sendOwnerSubTitle(lang.title_owner_self_died);
-        squad.removeSquadMember(owner, Squad.MemberFailedType.DIED);
-
-        endHoldUp();
+        tempSquad.sendOwnerSubTitle(lang.title_owner_self_died);
+        tempSquad.removeSquadMember(owner, Squad.MemberFailedType.DIED);
     }
 
 
 
     //when the leader left the area
     public void abandon(Player owner) {
+        Squad tempSquad = squad;
         //notify other member
         squad.sendTeamSubTitle(lang.title_bank_leader_left);
         //jail other member
-        squad.getSquadMembers().forEach(s -> squad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
+        endHoldUp();
+        tempSquad.getSquadMembers().forEach(s -> tempSquad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
 
 
         //notify owner
-        squad.sendOwnerSubTitle(lang.title_bank_left);
-        squad.removeSquadMember(owner, Squad.MemberFailedType.LEFT);
+        tempSquad.sendOwnerSubTitle(lang.title_bank_left);
+        tempSquad.removeSquadMember(owner, Squad.MemberFailedType.LEFT);
 
-        endHoldUp();
+
     }
 
     public void timeOver() {
-        squad.getOwner().playSound(squad.getOwner().getLocation(), Sound.BLOCK_END_GATEWAY_SPAWN, 2, 0);
-        squad.sendSubTitle(lang.time_over);
-        //jail other member
-        squad.getSquadMembers().forEach(s -> squad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
-        //notify owner
-        squad.removeSquadMember(squad.getOwner(), Squad.MemberFailedType.JAILED);
+        Squad tempSquad = squad;
         endHoldUp();
+        tempSquad.getOwner().playSound(tempSquad.getOwner().getLocation(), Sound.BLOCK_END_GATEWAY_SPAWN, 2, 0);
+        tempSquad.sendSubTitle(lang.time_over);
+        //jail other member
+        tempSquad.getSquadMembers().forEach(s -> tempSquad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
+        //notify owner
+        tempSquad.removeSquadMember(tempSquad.getOwner(), Squad.MemberFailedType.JAILED);
+
     }
 
 
@@ -139,6 +147,7 @@ public class HoldUp {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(!isHoldup) return;
                     squad.sendSubTitle(new StringBuilder(lang.title_time_left_notify_doors).toString()
                             .replace("%time", String.valueOf(config.getTimeBeforeDoors() / 20)));
 
@@ -149,6 +158,8 @@ public class HoldUp {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(!isHoldup) return;
+
                     squad.sendSubTitle(new StringBuilder(lang.title_time_left_notify_swat).toString()
                             .replace("%time", String.valueOf(config.getTimeBeforeSwat() / 20)));
                 }
@@ -158,6 +169,8 @@ public class HoldUp {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(!isHoldup) return;
+
                     squad.sendSubTitle(new StringBuilder(lang.title_time_left_notify_escape).toString()
                             .replace("%time", String.valueOf(config.getTimeBeforeJail() / 20)));
                 }
@@ -231,7 +244,7 @@ public class HoldUp {
         Bukkit.getOnlinePlayers().stream().filter(cur -> ((Player) cur).getWorld().equals(bank.getWorld())).forEach(cur -> {
 
             //add hostages
-            if(bank.getBankCuboid().isIn(cur) && !squad.isFromSquad(cur)) {
+            if(bank.getBankCuboid().isIn(cur) && !squad.isFromSquad(cur) && !((Player) cur).hasMetadata("NPC")) {
                 //send msg
                 Utils.sendTitle(cur,lang.title_hostage_notify);
                 getHostages().add(cur);
@@ -377,14 +390,14 @@ public class HoldUp {
         if(holdUpTask != null && !holdUpTask.isCancelled())
             holdUpTask.cancel();
 
-        if(squad != null) {
-            bank.getPoliceStaff().resetSquadTargets();
-            bank.getBankerStaff().resetSquadTargets();
-            bank.getHostessStaff().resetSquadTargets();
-        }
+
+        bank.getSwatTeam().resetSquadTargets();
+        bank.getPoliceStaff().resetSquadTargets();
+        bank.getBankerStaff().resetSquadTargets();
+        bank.getHostessStaff().resetSquadTargets();
+
 
         bank.getSwatTeam().refreshStaff();
-
         bank.getPoliceStaff().refreshStaff();
         bank.getBankerStaff().refreshStaff();
         bank.getHostessStaff().refreshStaff();

@@ -17,6 +17,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
@@ -52,8 +53,9 @@ public class PoliceStaff extends Staff  {
     public void refreshStaff() {
         super.refreshStaff();
         police.forEach(p -> {
-            p.despawn(DespawnReason.PENDING_RESPAWN);
-            p.spawn(bankLoader.getPolicePos(p), SpawnReason.RESPAWN);
+           // p.despawn(DespawnReason.PENDING_RESPAWN);
+            //p.spawn(bankLoader.getPolicePos(p), SpawnReason.RESPAWN);
+            p.teleport(bankLoader.getPolicePos(p), PlayerTeleportEvent.TeleportCause.PLUGIN);
         });
     }
 
@@ -96,7 +98,7 @@ public class PoliceStaff extends Staff  {
         }
 
         SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-        sentinel.fightback = true;
+        sentinel.fightback = false;
         sentinel.realistic = false;
         sentinel.speed = 1.3F;
         npc.getNavigator().getLocalParameters().baseSpeed(1.3F);

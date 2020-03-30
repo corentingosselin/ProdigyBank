@@ -162,7 +162,6 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     }
 
     private void registerEvents() {
-        Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
         Bukkit.getPluginManager().registerEvents(new ChestPlaceListener(this),this);
         Bukkit.getPluginManager().registerEvents(new RobberToolPlaceEvent(this),this);
         Bukkit.getPluginManager().registerEvents(new PlaceC4Listener(this),this);
@@ -196,31 +195,34 @@ public class ProdigyBank extends JavaPlugin implements Listener {
 
 
     private void loadCustomRecipes() {
-        NamespacedKey drillerKey = new NamespacedKey(this, "driller");
-        ShapedRecipe drillerRecipe = new ShapedRecipe(drillerKey, Driller.getDrillerItem());
-        drillerRecipe.shape(
-                "BTB"
-                , "CAC"
-                , "SGS");
-        drillerRecipe.setIngredient('B', Material.BLAZE_ROD);
-        drillerRecipe.setIngredient('C', Material.END_CRYSTAL);
-        drillerRecipe.setIngredient('T', Material.REDSTONE_TORCH);
-        drillerRecipe.setIngredient('G', Material.GRINDSTONE);
-        drillerRecipe.setIngredient('A', Material.BEACON);
-        drillerRecipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
-        Bukkit.addRecipe(drillerRecipe);
+        try {
 
-        NamespacedKey c4Key = new NamespacedKey(this, "c4");
-        ShapedRecipe c4Recipe = new ShapedRecipe(c4Key, C4.getItem());
-        c4Recipe.shape(
-                "TRT"
-                , "MGM"
-                , "TRT");
-        c4Recipe.setIngredient('T', Material.TNT);
-        c4Recipe.setIngredient('M', Material.HONEY_BLOCK);
-        c4Recipe.setIngredient('R', Material.REDSTONE_BLOCK);
-        c4Recipe.setIngredient('G', Material.BLAZE_POWDER);
-        Bukkit.addRecipe(c4Recipe);
+            NamespacedKey drillerKey = new NamespacedKey(this, "driller");
+            ShapedRecipe drillerRecipe = new ShapedRecipe(drillerKey, Driller.getDrillerItem());
+            drillerRecipe.shape(
+                    "BTB"
+                    , "CAC"
+                    , "SGS");
+            drillerRecipe.setIngredient('B', Material.BLAZE_ROD);
+            drillerRecipe.setIngredient('C', Material.END_CRYSTAL);
+            drillerRecipe.setIngredient('T', Material.REDSTONE_TORCH);
+            drillerRecipe.setIngredient('G', Material.GRINDSTONE);
+            drillerRecipe.setIngredient('A', Material.BEACON);
+            drillerRecipe.setIngredient('S', Material.TOTEM_OF_UNDYING);
+            Bukkit.addRecipe(drillerRecipe);
+
+            NamespacedKey c4Key = new NamespacedKey(this, "c4");
+            ShapedRecipe c4Recipe = new ShapedRecipe(c4Key, C4.getItem());
+            c4Recipe.shape(
+                    "TRT"
+                    , "MGM"
+                    , "TRT");
+            c4Recipe.setIngredient('T', Material.TNT);
+            c4Recipe.setIngredient('M', Material.HONEY_BLOCK);
+            c4Recipe.setIngredient('R', Material.REDSTONE_BLOCK);
+            c4Recipe.setIngredient('G', Material.BLAZE_POWDER);
+            Bukkit.addRecipe(c4Recipe);
+        } catch (IllegalStateException ignored) {}
     }
 
 

@@ -6,6 +6,7 @@ import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.SpawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
@@ -26,8 +27,11 @@ public class BankerStaff extends Staff  {
         for (Player player : holdup.getSquad().getSquadMembers()) {
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).removeFromList(bankerTrait.allAvoids);
         }
-        banker.despawn(DespawnReason.PENDING_RESPAWN);
-        banker.spawn(bankLoader.getBankerSpawnPoint(), SpawnReason.RESPAWN);
+
+        banker.teleport(bankLoader.getBankerSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        //chunk error
+       // banker.despawn(DespawnReason.PENDING_RESPAWN);
+        //banker.spawn(bankLoader.getBankerSpawnPoint(), SpawnReason.RESPAWN);
     }
 
 

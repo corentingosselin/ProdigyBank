@@ -46,8 +46,7 @@ public class CheckBankListener implements Listener {
     public void teleport(PlayerTeleportEvent e) {
         if(e.getPlayer().hasMetadata("NPC")) return;
         if(!bank.getHoldUp().isHoldup()) return;
-        if(bank.getHoldUp().getSquad().getSquadMembers().contains(e.getPlayer())
-                || bank.getHoldUp().getSquad().getOwner().equals(e.getPlayer())
+        if(bank.getHoldUp().getSquad().isFromSquad(e.getPlayer())
                 || bank.getHoldUp().getHostages().contains(e.getPlayer())) {
             e.getPlayer().sendMessage(lang.tp_not_allowed);
             e.setCancelled(true);
