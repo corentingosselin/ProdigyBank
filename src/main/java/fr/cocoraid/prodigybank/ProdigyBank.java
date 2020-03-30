@@ -141,7 +141,6 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     }
 
     //if crash
-
     public void checkForInvalidsCitizens() {
         CitizensAPI.getNPCRegistry().iterator().forEachRemaining(npc -> {
             SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
