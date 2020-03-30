@@ -6,6 +6,7 @@ import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.SpawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.mcmonkey.sentinel.SentinelTrait;
 import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 
@@ -52,11 +53,14 @@ public class HostessStaff extends Staff {
     public void refreshStaff() {
         super.refreshStaff();
 
-        depositHostess.despawn(DespawnReason.PENDING_RESPAWN);
-        depositHostess.spawn(bankLoader.getDepositHostessSpawnPoint(), SpawnReason.RESPAWN);
+        depositHostess.teleport(bankLoader.getDepositHostessSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        withdrawHostess.teleport(bankLoader.getWithdrawHostessSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-        withdrawHostess.despawn(DespawnReason.PENDING_RESPAWN);
-        withdrawHostess.spawn(bankLoader.getWithdrawHostessSpawnPoint(), SpawnReason.RESPAWN);
+        //depositHostess.despawn(DespawnReason.PENDING_RESPAWN);
+        //depositHostess.spawn(bankLoader.getDepositHostessSpawnPoint(), SpawnReason.RESPAWN);
+
+        //withdrawHostess.despawn(DespawnReason.PENDING_RESPAWN);
+        //withdrawHostess.spawn(bankLoader.getWithdrawHostessSpawnPoint(), SpawnReason.RESPAWN);
 
 
     }

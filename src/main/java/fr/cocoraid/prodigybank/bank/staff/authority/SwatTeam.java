@@ -7,6 +7,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
+import net.citizensnpcs.trait.LookClose;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -110,6 +111,18 @@ public class SwatTeam extends Staff {
                 });
                 swats.add(npc);
             }
+        });
+    }
+
+    @Override
+    public void resetSquadTargets() {
+        super.resetSquadTargets();
+        swats.forEach(p -> {
+            SentinelTrait sentinel = p.getTrait(SentinelTrait.class);
+            new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).removeFromList(sentinel.allTargets);
+            holdup.getSquad().getSquadMembers().forEach(s -> {
+                new SentinelTargetLabel("uuid:" + s.getUniqueId()).removeFromList(sentinel.allTargets);
+            });
         });
     }
 

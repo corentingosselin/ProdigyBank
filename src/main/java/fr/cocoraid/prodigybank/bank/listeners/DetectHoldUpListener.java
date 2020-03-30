@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -73,6 +74,7 @@ public class DetectHoldUpListener implements Listener {
     //IS TRIGGERED the LAST
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent e) {
+
         if(bank.getBankCuboid().isIn(e.getEntity().getLocation()) || bank.getBankCuboid().isIn(e.getDamager().getLocation())) {
         if(bank.getHoldUp().isHoldup()) {
             if(bank.getHoldUp().getSquad().getOwner().equals(e.getEntity())) {
@@ -85,6 +87,18 @@ public class DetectHoldUpListener implements Listener {
             e.setCancelled(false);
         } else {
                 e.setCancelled(true);
+            Bukkit.broadcastMessage("damage event");
+            }
+        }
+    }
+
+
+    @EventHandler
+    public void projectile(ProjectileHitEvent e) {
+        if(e.getEntity() == null) return;
+
+        if(bank.getBankCuboid().isIn(e.getEntity().getLocation()) || bank.getBankCuboid().isIn(e.getHitEntity().getLocation())) {
+            if (bank.getHoldUp().isHoldup()) {
             }
         }
     }
