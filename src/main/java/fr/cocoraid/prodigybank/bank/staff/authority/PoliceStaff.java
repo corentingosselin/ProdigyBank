@@ -34,6 +34,20 @@ public class PoliceStaff extends Staff  {
         super(bank);
     }
 
+
+
+    @Override
+    public void refreshStaff() {
+        super.refreshStaff();
+        police.forEach(p -> {
+           // p.despawn(DespawnReason.PENDING_RESPAWN);
+            //p.spawn(bankLoader.getPolicePos(p), SpawnReason.RESPAWN);
+            p.teleport(bankLoader.getPolicePos(p), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        });
+    }
+
+
+
     @Override
     public void addSquadTarget() {
         super.addSquadTarget();
@@ -48,17 +62,6 @@ public class PoliceStaff extends Staff  {
 
         });
     }
-
-    @Override
-    public void refreshStaff() {
-        super.refreshStaff();
-        police.forEach(p -> {
-           // p.despawn(DespawnReason.PENDING_RESPAWN);
-            //p.spawn(bankLoader.getPolicePos(p), SpawnReason.RESPAWN);
-            p.teleport(bankLoader.getPolicePos(p), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        });
-    }
-
     @Override
     public void resetSquadTargets() {
         super.resetSquadTargets();

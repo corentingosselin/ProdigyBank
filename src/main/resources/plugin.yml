@@ -3,5 +3,5 @@ version: 1.0
 author: cocoraid
 main: fr.cocoraid.prodigybank.ProdigyBank
 api-version: 1.13
-depend: [WorldEdit, Citizens, Sentinel, Vault]
+depend: [Multiverse-Core, WorldEdit, Citizens, Sentinel, Vault]
 softdepend: [WorldGuard]

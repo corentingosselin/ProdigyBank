@@ -71,10 +71,11 @@ public class HoldUp {
         tempSquad.getSquadMembers().forEach(s -> s.teleport(tempSquad.getOwner()));
     }
 
+
+    private boolean ownerHasDied = false;
     //when the leader died
     public void failOwnerDied(Player owner) {
         Squad tempSquad = squad;
-        endHoldUp();
         //notify other member
         tempSquad.sendTeamSubTitle(lang.title_owner_died);
         //jail other member
@@ -84,6 +85,7 @@ public class HoldUp {
         //notify owner
         tempSquad.sendOwnerSubTitle(lang.title_owner_self_died);
         tempSquad.removeSquadMember(owner, Squad.MemberFailedType.DIED);
+        ownerHasDied = true;
     }
 
 
@@ -107,13 +109,14 @@ public class HoldUp {
 
     public void timeOver() {
         Squad tempSquad = squad;
-        endHoldUp();
-        tempSquad.getOwner().playSound(tempSquad.getOwner().getLocation(), Sound.BLOCK_END_GATEWAY_SPAWN, 2, 0);
-        tempSquad.sendSubTitle(lang.time_over);
         //jail other member
         tempSquad.getSquadMembers().forEach(s -> tempSquad.removeSquadMember(s, Squad.MemberFailedType.JAILED));
         //notify owner
         tempSquad.removeSquadMember(tempSquad.getOwner(), Squad.MemberFailedType.JAILED);
+
+        endHoldUp();
+        tempSquad.getOwner().playSound(tempSquad.getOwner().getLocation(), Sound.BLOCK_END_GATEWAY_SPAWN, 2, 0);
+        tempSquad.sendSubTitle(lang.time_over);
 
     }
 
@@ -266,14 +269,22 @@ public class HoldUp {
     private List<UUID> warned = new ArrayList<>();
     private void startTask() {
         this.holdUpTask = new BukkitRunnable() {
-
-
             @Override
             public void run() {
+
                 if(!isHoldup) {
                     this.cancel();
+                    endHoldUp();
                     return;
                 }
+
+                if(ownerHasDied) {
+                    endHoldUp();
+                    return;
+                }
+
+
+
                 int minutes = time / (60 * 20);
                 int seconds = (time / 20) % 60;
                 int tick = (time % 20) * 3;
@@ -396,11 +407,10 @@ public class HoldUp {
         bank.getBankerStaff().resetSquadTargets();
         bank.getHostessStaff().resetSquadTargets();
 
-
-        bank.getSwatTeam().refreshStaff();
         bank.getPoliceStaff().refreshStaff();
         bank.getBankerStaff().refreshStaff();
         bank.getHostessStaff().refreshStaff();
+        bank.getSwatTeam().refreshStaff();
 
 
         bank.getChests().forEach(c -> c.cancel());
@@ -444,6 +454,7 @@ public class HoldUp {
         bank.getVaultDoor().reset();
 
         isHoldup = false;
+        ownerHasDied = false;
     }
 
     public Driller getDriller() {

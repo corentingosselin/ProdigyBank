@@ -4,13 +4,11 @@ import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.Bank;
 import fr.cocoraid.prodigybank.bank.Squad;
 import fr.cocoraid.prodigybank.filemanager.language.Language;
-import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -74,8 +71,9 @@ public class DetectHoldUpListener implements Listener {
     //IS TRIGGERED the LAST
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent e) {
-
+        Bukkit.broadcastMessage("test5");
         if(bank.getBankCuboid().isIn(e.getEntity().getLocation()) || bank.getBankCuboid().isIn(e.getDamager().getLocation())) {
+            Bukkit.broadcastMessage("test6");
         if(bank.getHoldUp().isHoldup()) {
             if(bank.getHoldUp().getSquad().getOwner().equals(e.getEntity())) {
                 Player owner = (Player) e.getEntity();
@@ -87,21 +85,11 @@ public class DetectHoldUpListener implements Listener {
             e.setCancelled(false);
         } else {
                 e.setCancelled(true);
-            Bukkit.broadcastMessage("damage event");
+                Bukkit.broadcastMessage("test");
             }
         }
     }
 
-
-    @EventHandler
-    public void projectile(ProjectileHitEvent e) {
-        if(e.getEntity() == null) return;
-
-        if(bank.getBankCuboid().isIn(e.getEntity().getLocation()) || bank.getBankCuboid().isIn(e.getHitEntity().getLocation())) {
-            if (bank.getHoldUp().isHoldup()) {
-            }
-        }
-    }
 
     @EventHandler
     public void pickupKey(EntityPickupItemEvent e) {
@@ -135,7 +123,9 @@ public class DetectHoldUpListener implements Listener {
     public void detectDamage(NPCDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
+            Bukkit.broadcastMessage("test1");
             if(bank.isStaffMember(e.getNPC())) {
+                Bukkit.broadcastMessage("test3");
                 if(bank.getHoldUp().isHoldup()) {
                     if(!bank.getHoldUp().getSquad().isFromSquad(p)) {
                         e.setCancelled(true);
@@ -160,6 +150,7 @@ public class DetectHoldUpListener implements Listener {
                         e.setDamage(0);
                     }
                 }else {
+                    Bukkit.broadcastMessage("test2");
                     e.setCancelled(true);
                 }
             }

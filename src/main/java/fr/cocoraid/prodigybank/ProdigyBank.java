@@ -24,10 +24,12 @@ import fr.cocoraid.prodigybank.setupbank.SetupBankProcess;
 import fr.cocoraid.prodigybank.utils.CC;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +37,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcmonkey.sentinel.SentinelTrait;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -79,6 +82,8 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         } else if(Bukkit.getPluginManager().getPlugin("Citizens") == null) {
             setEnabled(false);
             c.sendMessage("§cCitizens is required to run ProdigyBank !");
+            //check for banker before
+            loadBank();
         } else if(Bukkit.getPluginManager().getPlugin("Sentinel") == null) {
             setEnabled(false);
             c.sendMessage("§cSentinel is required to run ProdigyBank !");
@@ -101,6 +106,12 @@ public class ProdigyBank extends JavaPlugin implements Listener {
         this.armorStandModel = new ArmorStandModel(this);
         armorStandModel.loadModels();
 
+        boolean check = CitizensAPI.getNPCRegistry().iterator().hasNext();
+        if(check) {
+            citizensLoaded = false;
+            loadBank();
+            c.sendMessage("§cDetecting reload ! We are trying to load citizens");
+        }
     }
 
     /**
@@ -171,7 +182,6 @@ public class ProdigyBank extends JavaPlugin implements Listener {
     private void loadCommands() {
         this.manager = new PaperCommandManager(this);
         manager.registerCommand(new MainCMD(this));
-        manager.registerCommand(new SquadCMD(this));
         manager.registerCommand(new ProdigyBankSetupCMD(this));
         manager.registerCommand(new SquadCMD(this));
         manager.getCommandConditions().addCondition("bank", (context) -> {

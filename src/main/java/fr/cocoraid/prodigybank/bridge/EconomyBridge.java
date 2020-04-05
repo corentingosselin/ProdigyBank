@@ -70,22 +70,24 @@ public class EconomyBridge {
 		if (!hasValidEconomy()) throw new IllegalStateException("Economy plugin was not found!");
 		if (amount < 0.0) throw new IllegalArgumentException("Invalid amount of money: " + amount);
 
-		EconomyResponse response = economy.withdrawPlayer(player.getName(), player.getWorld().getName(), amount);
-		boolean result = response.transactionSuccess();
+		//EconomyResponse response = economy.withdrawPlayer(player.getName(), player.getWorld().getName(), amount);
+		//boolean result = response.transactionSuccess();
 
 
-		return result;
+		//return result;
+		return true;
 	}
 
 	public static boolean giveMoney(Player player, double amount) {
 		if (!hasValidEconomy()) throw new IllegalStateException("Economy plugin was not found!");
 		if (amount < 0.0) throw new IllegalArgumentException("Invalid amount of money: " + amount);
 
-		EconomyResponse response = economy.depositPlayer(player.getName(), player.getWorld().getName(), amount);
-		boolean result = response.transactionSuccess();
+		//EconomyResponse response = economy.depositPlayer(player.getName(), player.getWorld().getName(), amount);
+		//boolean result = response.transactionSuccess();
 
 
-		return result;
+		//return result;
+		return true;
 	}
 
 	public static String formatMoney(double amount) {

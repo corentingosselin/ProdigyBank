@@ -84,7 +84,7 @@ money-collected-sound: ITEM_ARMOR_EQUIP_CHAIN
 
 # Time in seconds
 time-limit-before-doors: 60
-time-limit-before-swatting: 120
+time-limit-before-swatting: 60
 time-limit-before-jail: 60
 
 # These parameters are essentially used to change the speed of doors breaking

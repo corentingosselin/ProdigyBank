@@ -5,13 +5,8 @@ import co.aikar.commands.annotation.*;
 import fr.cocoraid.prodigybank.ProdigyBank;
 import fr.cocoraid.prodigybank.bank.tools.C4;
 import fr.cocoraid.prodigybank.bank.tools.Driller;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.mcmonkey.sentinel.SentinelTrait;
 
 @CommandAlias("prodigybank|pb")
 public class MainCMD extends BaseCommand {
@@ -25,14 +20,8 @@ public class MainCMD extends BaseCommand {
     @Description("Show Help menu")
     public static void help(Player player, String[] args) {
         if (args.length == 0) {
-            player.sendMessage("ceci est une aide");
-            Location l = player.getLocation();
-            NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "");
-            npc.addTrait(SentinelTrait.class);
-            SentinelTrait sentinel = npc.getTrait(SentinelTrait.class);
-            npc.spawn(l);
+            player.sendMessage("La banque existe " + (instance.getBank() != null));
 
-            //ProdigyBank.getInstance().getBank().getHoldUp().endHoldUp();
 
         }
     }

@@ -7,7 +7,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
-import net.citizensnpcs.trait.LookClose;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +25,6 @@ import org.mcmonkey.sentinel.targeting.SentinelTargetLabel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class SwatTeam extends Staff {
 
@@ -46,7 +44,6 @@ public class SwatTeam extends Staff {
         super.refreshStaff();
         swats.stream().filter(s -> s.isSpawned()).forEach(s -> s.destroy());
         swats.clear();
-
     }
 
     public void spawnSwat() {
