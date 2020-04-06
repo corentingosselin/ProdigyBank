@@ -40,9 +40,9 @@ public class PoliceStaff extends Staff  {
     public void refreshStaff() {
         super.refreshStaff();
         police.forEach(p -> {
-           // p.despawn(DespawnReason.PENDING_RESPAWN);
-            //p.spawn(bankLoader.getPolicePos(p), SpawnReason.RESPAWN);
-            p.teleport(bankLoader.getPolicePos(p), PlayerTeleportEvent.TeleportCause.PLUGIN);
+           p.despawn(DespawnReason.PENDING_RESPAWN);
+            p.spawn(bankLoader.getPolicePos(p), SpawnReason.RESPAWN);
+            //p.teleport(bankLoader.getPolicePos(p), PlayerTeleportEvent.TeleportCause.PLUGIN);
         });
     }
 
@@ -68,6 +68,7 @@ public class PoliceStaff extends Staff  {
         police.forEach(p -> {
             SentinelTrait sentinel = p.getTrait(SentinelTrait.class);
             p.getTrait(LookClose.class).setRandomLook(true);
+            sentinel.chasing = null;
             new SentinelTargetLabel("uuid:" + holdup.getSquad().getOwner().getUniqueId()).removeFromList(sentinel.allTargets);
             holdup.getSquad().getSquadMembers().forEach(s -> {
                 new SentinelTargetLabel("uuid:" + s.getUniqueId()).removeFromList(sentinel.allTargets);

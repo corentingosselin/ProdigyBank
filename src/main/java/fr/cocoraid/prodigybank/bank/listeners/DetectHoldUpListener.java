@@ -71,9 +71,7 @@ public class DetectHoldUpListener implements Listener {
     //IS TRIGGERED the LAST
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityDamage(EntityDamageByEntityEvent e) {
-        Bukkit.broadcastMessage("test5");
         if(bank.getBankCuboid().isIn(e.getEntity().getLocation()) || bank.getBankCuboid().isIn(e.getDamager().getLocation())) {
-            Bukkit.broadcastMessage("test6");
         if(bank.getHoldUp().isHoldup()) {
             if(bank.getHoldUp().getSquad().getOwner().equals(e.getEntity())) {
                 Player owner = (Player) e.getEntity();
@@ -85,7 +83,6 @@ public class DetectHoldUpListener implements Listener {
             e.setCancelled(false);
         } else {
                 e.setCancelled(true);
-                Bukkit.broadcastMessage("test");
             }
         }
     }
@@ -123,9 +120,7 @@ public class DetectHoldUpListener implements Listener {
     public void detectDamage(NPCDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
-            Bukkit.broadcastMessage("test1");
             if(bank.isStaffMember(e.getNPC())) {
-                Bukkit.broadcastMessage("test3");
                 if(bank.getHoldUp().isHoldup()) {
                     if(!bank.getHoldUp().getSquad().isFromSquad(p)) {
                         e.setCancelled(true);
@@ -150,7 +145,6 @@ public class DetectHoldUpListener implements Listener {
                         e.setDamage(0);
                     }
                 }else {
-                    Bukkit.broadcastMessage("test2");
                     e.setCancelled(true);
                 }
             }

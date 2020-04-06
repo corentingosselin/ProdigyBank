@@ -53,14 +53,14 @@ public class HostessStaff extends Staff {
     public void refreshStaff() {
         super.refreshStaff();
 
-        depositHostess.teleport(bankLoader.getDepositHostessSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        withdrawHostess.teleport(bankLoader.getWithdrawHostessSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        //depositHostess.teleport(bankLoader.getDepositHostessSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        //withdrawHostess.teleport(bankLoader.getWithdrawHostessSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-        //depositHostess.despawn(DespawnReason.PENDING_RESPAWN);
-        //depositHostess.spawn(bankLoader.getDepositHostessSpawnPoint(), SpawnReason.RESPAWN);
+        depositHostess.despawn(DespawnReason.PENDING_RESPAWN);
+        depositHostess.spawn(bankLoader.getDepositHostessSpawnPoint(), SpawnReason.RESPAWN);
 
-        //withdrawHostess.despawn(DespawnReason.PENDING_RESPAWN);
-        //withdrawHostess.spawn(bankLoader.getWithdrawHostessSpawnPoint(), SpawnReason.RESPAWN);
+        withdrawHostess.despawn(DespawnReason.PENDING_RESPAWN);
+        withdrawHostess.spawn(bankLoader.getWithdrawHostessSpawnPoint(), SpawnReason.RESPAWN);
 
 
     }

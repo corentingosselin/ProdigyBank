@@ -23,6 +23,13 @@ import java.util.*;
 
 public class HoldUp {
 
+
+    /**
+     * Banque
+     * FLÈCHE NE FONT PAS DE DÉGAT
+     * peut rentrer après la mort, membre de la squad
+     */
+
     protected ProdigyBank instance = ProdigyBank.getInstance();
     protected Language lang = instance.getLanguage();
     protected ConfigLoader config = instance.getConfigLoader();

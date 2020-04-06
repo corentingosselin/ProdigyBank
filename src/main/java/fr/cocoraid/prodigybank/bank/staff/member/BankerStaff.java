@@ -28,10 +28,10 @@ public class BankerStaff extends Staff  {
             new SentinelTargetLabel("uuid:" + player.getUniqueId()).removeFromList(bankerTrait.allAvoids);
         }
 
-        banker.teleport(bankLoader.getBankerSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        //banker.teleport(bankLoader.getBankerSpawnPoint(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         //chunk error
-       // banker.despawn(DespawnReason.PENDING_RESPAWN);
-        //banker.spawn(bankLoader.getBankerSpawnPoint(), SpawnReason.RESPAWN);
+       banker.despawn(DespawnReason.PENDING_RESPAWN);
+        banker.spawn(bankLoader.getBankerSpawnPoint(), SpawnReason.RESPAWN);
     }
 
 
